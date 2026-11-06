@@ -1,0 +1,86 @@
+{
+    "top_10_features": [
+        {
+            "Rank": 1,
+            "Feature": "Votes",
+            "Importance_GB": 0.970918218027179,
+            "Permutation_Importance_Mean": 1.8473021399371625
+        },
+        {
+            "Rank": 2,
+            "Feature": "City: Other",
+            "Importance_GB": 0.008110632145419875,
+            "Permutation_Importance_Mean": 0.005358563756152512
+        },
+        {
+            "Rank": 3,
+            "Feature": "Average Cost for two",
+            "Importance_GB": 0.004455040355107218,
+            "Permutation_Importance_Mean": 0.0037509170498831734
+        },
+        {
+            "Rank": 4,
+            "Feature": "Country Code: 1",
+            "Importance_GB": 0.0026112090555549857,
+            "Permutation_Importance_Mean": 0.001987262270254897
+        },
+        {
+            "Rank": 5,
+            "Feature": "Primary Cuisine: North Indian",
+            "Importance_GB": 0.0013312621944712633,
+            "Permutation_Importance_Mean": 0.0020843061332839197
+        },
+        {
+            "Rank": 6,
+            "Feature": "Price range",
+            "Importance_GB": 0.0012980975202023762,
+            "Permutation_Importance_Mean": 0.0016790689198607823
+        },
+        {
+            "Rank": 7,
+            "Feature": "Primary Cuisine: Cafe",
+            "Importance_GB": 0.0008382143388609587,
+            "Permutation_Importance_Mean": 0.001028213307019521
+        },
+        {
+            "Rank": 8,
+            "Feature": "Has Online delivery",
+            "Importance_GB": 0.0007680901494067159,
+            "Permutation_Importance_Mean": 0.0008534160405987868
+        },
+        {
+            "Rank": 9,
+            "Feature": "Cuisine Count",
+            "Importance_GB": 0.0007151338072710731,
+            "Permutation_Importance_Mean": 0.0004111796410726898
+        },
+        {
+            "Rank": 10,
+            "Feature": "Country Code: 30",
+            "Importance_GB": 0.0006231789523245664,
+            "Permutation_Importance_Mean": 0.0008429868536910412
+        }
+    ],
+    "key_insights": [
+        {
+            "feature": "Votes",
+            "role": "Dominant positive driver. High volume of customer reviews strongly correlates with established customer engagement and validated ratings.",
+            "interpretation": "Restaurants with zero or near-zero votes account for unrated 0.0 entries. High-vote restaurants typically converge around higher aggregate ratings."
+        },
+        {
+            "feature": "Price range & Average Cost for two",
+            "role": "Affordability and quality signal.",
+            "interpretation": "Higher price range tiers (Price range 3 and 4) maintain higher median customer ratings, reflecting enhanced ambiance, premium ingredients, and professional service."
+        },
+        {
+            "feature": "Online delivery & Table booking",
+            "role": "Service accessibility conveniences.",
+            "interpretation": "Venues offering table reservations and online ordering demonstrate active digital adoption and customer-centric operational standards."
+        },
+        {
+            "feature": "Location (Country Code & City)",
+            "role": "Geographical market context.",
+            "interpretation": "Regional rating cultures, platform penetration, and local dining competition significantly benchmark baseline expected scores."
+        }
+    ]
+}

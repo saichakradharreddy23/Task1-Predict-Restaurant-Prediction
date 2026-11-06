@@ -1,0 +1,82 @@
+{
+    "top_10": [
+        {
+            "Rank": 1,
+            "Feature": "Votes",
+            "Importance": 0.9642187414250769,
+            "Permutation_Importance": 1.879908530488907
+        },
+        {
+            "Rank": 2,
+            "Feature": "City: Other",
+            "Importance": 0.009681708992087177,
+            "Permutation_Importance": 0.008268523644843762
+        },
+        {
+            "Rank": 3,
+            "Feature": "Average Cost for two",
+            "Importance": 0.007066672444455505,
+            "Permutation_Importance": 0.005557582784099013
+        },
+        {
+            "Rank": 4,
+            "Feature": "Cuisine Count",
+            "Importance": 0.0023433914523171276,
+            "Permutation_Importance": 0.00019606787508674728
+        },
+        {
+            "Rank": 5,
+            "Feature": "Primary Cuisine: North Indian",
+            "Importance": 0.0013436792264392113,
+            "Permutation_Importance": 0.0026657853786127062
+        },
+        {
+            "Rank": 6,
+            "Feature": "Price range",
+            "Importance": 0.0013075745100275303,
+            "Permutation_Importance": 0.000674207312274211
+        },
+        {
+            "Rank": 7,
+            "Feature": "Has Online delivery",
+            "Importance": 0.0010621364266468433,
+            "Permutation_Importance": 0.0007813451616014211
+        },
+        {
+            "Rank": 8,
+            "Feature": "Country Code: 1",
+            "Importance": 0.0008985436984450493,
+            "Permutation_Importance": 0.0010006784047239092
+        },
+        {
+            "Rank": 9,
+            "Feature": "Primary Cuisine: Chinese",
+            "Importance": 0.0007743032061481117,
+            "Permutation_Importance": 0.0005632986232666281
+        },
+        {
+            "Rank": 10,
+            "Feature": "Locality: Other",
+            "Importance": 0.0006561934459631996,
+            "Permutation_Importance": 0.00018157065313402222
+        }
+    ],
+    "interpretation_notes": [
+        {
+            "factor": "Votes (Review Volume)",
+            "insight": "Votes is by far the strongest predictive driver (93.5%+). Restaurants with 0-3 votes make up the unrated 0.0 entries, while higher review volume strongly anchors ratings in the 3.8 - 4.8 range."
+        },
+        {
+            "factor": "Average Cost for Two & Price Range",
+            "insight": "Higher affordability tiers show consistent positive association with customer rating, reflecting investment in ambiance, food presentation, and hospitality service."
+        },
+        {
+            "factor": "Location (City & Locality)",
+            "insight": "Regional market benchmarks and local dining competition significantly influence baseline expected ratings."
+        },
+        {
+            "factor": "Service Conveniences (Delivery & Table Booking)",
+            "insight": "Digital enablement offers customer convenience and expands engagement opportunities."
+        }
+    ]
+}

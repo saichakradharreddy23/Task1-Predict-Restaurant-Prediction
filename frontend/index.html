@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RESTAURANT INSIGHT – AI Powered Restaurant Rating Prediction</title>
+  
+  <!-- Google Fonts: Playfair Display (Luxury Editorial) & Plus Jakarta Sans (Modern Clean) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Alpine.js for Reactive State Management -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Tailwind Custom Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            page: {
+              explorer: '#F2E9DC',
+              predict: '#E8F0E8',
+              performance: '#E9EAF4',
+              importance: '#F5E6E1',
+              about: '#E5EDF0',
+              home: '#F8F5EE'
+            },
+            charcoal: {
+              text: '#252525',
+              muted: '#555555',
+              800: '#231F20',
+              900: '#161414',
+              950: '#0E0D0D'
+            },
+            terracotta: {
+              500: '#EA580C',
+              600: '#C2410C',
+              700: '#9A3412',
+            },
+            sage: {
+              50: '#F4F8F4',
+              100: '#E8F0E8',
+              500: '#3D7350',
+              600: '#2A553A',
+              700: '#1C3E29',
+              800: '#132A1C',
+              900: '#0B1B11'
+            },
+            lavender: {
+              50: '#F5F5FB',
+              100: '#E9EAF4',
+              500: '#5C5E8E',
+              600: '#474976',
+              700: '#373960'
+            },
+            blush: {
+              50: '#FAF2EF',
+              100: '#F5E6E1',
+              500: '#B55A4F',
+              600: '#9B453A',
+              700: '#813329'
+            },
+            bluegrey: {
+              50: '#F2F6F8',
+              100: '#E5EDF0',
+              500: '#456B7B',
+              600: '#345360',
+              700: '#253D47'
+            },
+            gold: {
+              400: '#FBBF24',
+              500: '#D97706',
+              600: '#B45309',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #EFE8DE; }
+    ::-webkit-scrollbar-thumb { background: #C2410C; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9A3412; }
+
+    .hero-glow {
+      background: radial-gradient(circle at 50% 50%, rgba(194, 65, 12, 0.18) 0%, rgba(22, 20, 20, 0) 70%);
+    }
+    
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FDE68A 0%, #D97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .terracotta-gradient-text {
+      background: linear-gradient(135deg, #FB923C 0%, #C2410C 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Page-transition styling */
+    .page-fade-enter {
+      animation: fadeIn 0.35s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body class="text-charcoal-text font-sans antialiased min-h-screen flex flex-col selection:bg-terracotta-600 selection:text-white"
+      x-data="restaurantApp()"
+      x-init="initApp()">
+
+  <!-- ========================================================================= -->
+  <!-- NAVIGATION BAR (DARK LUXURY THEME TO COMPLEMENT ALL PAGE BACKGROUNDS)     -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-50 bg-charcoal-900/95 backdrop-blur-md border-b border-charcoal-800 text-white transition-all shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" @click.prevent="activeTab = 'home'" class="flex items-center space-x-3 group">
+        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-terracotta-500 to-gold-500 flex items-center justify-center shadow-lg shadow-terracotta-500/25 group-hover:scale-105 transition-transform">
+          <i data-lucide="utensils" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <span class="font-serif text-2xl font-bold tracking-tight text-white block">RESTAURANT <span class="gold-gradient-text">INSIGHT</span></span>
+          <span class="text-[10px] tracking-widest uppercase text-terracotta-500 font-semibold block -mt-1">AI Rating Intelligence</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links with Coordinated Visual Indicators -->
+      <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+        <!-- Home -->
+        <button @click="activeTab = 'home'" 
+                :class="activeTab === 'home' ? 'text-white bg-charcoal-800 font-semibold shadow-inner' : 'text-gray-300 hover:text-white hover:bg-charcoal-800/50'" 
+                class="px-3 py-2 rounded-lg text-sm transition-all flex items-center space-x-1.5">
+          <i data-lucide="home" class="w-4 h-4 text-terracotta-500"></i>
+          <span>Home</span>
+        </button>
+
+        <!-- Explorer (Warm Beige Indicator) -->
+        <button @click="activeTab = 'explorer'" 
+                :class="activeTab === 'explorer' ? 'text-amber-200 bg-charcoal-800 font-semibold shadow-inner ring-1 ring-amber-300/30' : 'text-gray-300 hover:text-white hover:bg-charcoal-800/50'" 
+                class="px-3 py-2 rounded-lg text-sm transition-all flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#E5DDD0] inline-block"></span>
+          <span>Explore</span>
+        </button>
+
+        <!-- Predict Rating (Soft Sage Indicator) -->
+        <button @click="activeTab = 'predict'" 
+                :class="activeTab === 'predict' ? 'text-emerald-200 bg-charcoal-800 font-semibold shadow-inner ring-1 ring-emerald-400/30' : 'text-gray-300 hover:text-white hover:bg-charcoal-800/50'" 
+                class="px-3 py-2 rounded-lg text-sm transition-all flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#82B29A] inline-block"></span>
+          <span>Predict Rating</span>
+        </button>
+
+        <!-- Model Performance (Soft Lavender Indicator) -->
+        <button @click="activeTab = 'performance'" 
+                :class="activeTab === 'performance' ? 'text-indigo-200 bg-charcoal-800 font-semibold shadow-inner ring-1 ring-indigo-300/30' : 'text-gray-300 hover:text-white hover:bg-charcoal-800/50'" 
+                class="px-3 py-2 rounded-lg text-sm transition-all flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#A5A6D6] inline-block"></span>
+          <span>Performance</span>
+        </button>
+
+        <!-- Feature Importance (Soft Blush Indicator) -->
+        <button @click="activeTab = 'importance'" 
+                :class="activeTab === 'importance' ? 'text-rose-200 bg-charcoal-800 font-semibold shadow-inner ring-1 ring-rose-300/30' : 'text-gray-300 hover:text-white hover:bg-charcoal-800/50'" 
+                class="px-3 py-2 rounded-lg text-sm transition-all flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#E5AAA1] inline-block"></span>
+          <span>Feature Ranking</span>
+        </button>
+
+        <!-- About Project (Muted Blue-Grey Indicator) -->
+        <button @click="activeTab = 'about'" 
+                :class="activeTab === 'about' ? 'text-sky-200 bg-charcoal-800 font-semibold shadow-inner ring-1 ring-sky-300/30' : 'text-gray-300 hover:text-white hover:bg-charcoal-800/50'" 
+                class="px-3 py-2 rounded-lg text-sm transition-all flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#8EA8B2] inline-block"></span>
+          <span>About</span>
+        </button>
+      </nav>
+
+      <!-- CTA Button -->
+      <div class="hidden sm:flex items-center space-x-3">
+        <button @click="activeTab = 'predict'" class="bg-gradient-to-r from-terracotta-600 to-terracotta-500 hover:from-terracotta-500 hover:to-gold-500 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg shadow-terracotta-600/30 transition-all flex items-center space-x-2 transform active:scale-95">
+          <i data-lucide="sparkles" class="w-4 h-4 text-gold-300"></i>
+          <span>Try AI Predictor</span>
+        </button>
+      </div>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-gray-200 p-2 focus:outline-none">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div x-show="mobileMenuOpen" x-transition class="md:hidden bg-charcoal-950 border-b border-charcoal-800 px-4 py-4 space-y-2">
+      <button @click="activeTab = 'home'; mobileMenuOpen = false" class="block w-full text-left px-3 py-2 text-gray-200 hover:bg-charcoal-800 rounded-lg">Home</button>
+      <button @click="activeTab = 'explorer'; mobileMenuOpen = false" class="block w-full text-left px-3 py-2 text-gray-200 hover:bg-charcoal-800 rounded-lg">Explore Restaurants</button>
+      <button @click="activeTab = 'predict'; mobileMenuOpen = false" class="block w-full text-left px-3 py-2 text-gray-200 hover:bg-charcoal-800 rounded-lg">Predict Rating</button>
+      <button @click="activeTab = 'performance'; mobileMenuOpen = false" class="block w-full text-left px-3 py-2 text-gray-200 hover:bg-charcoal-800 rounded-lg">Model Performance</button>
+      <button @click="activeTab = 'importance'; mobileMenuOpen = false" class="block w-full text-left px-3 py-2 text-gray-200 hover:bg-charcoal-800 rounded-lg">Feature Importance</button>
+      <button @click="activeTab = 'about'; mobileMenuOpen = false" class="block w-full text-left px-3 py-2 text-gray-200 hover:bg-charcoal-800 rounded-lg">About Project</button>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN CONTENT CONTAINER                                                    -->
+  <!-- ========================================================================= -->
+  <main class="flex-grow">
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 1: HOME / LANDING PAGE                                             -->
+    <!-- ======================================================================= -->
+    <div x-show="activeTab === 'home'" class="page-fade-enter">
+      
+      <!-- Hero Section -->
+      <section class="relative bg-charcoal-950 text-white py-24 lg:py-32 overflow-hidden">
+        <!-- Background Imagery with Dark Gradient Overlay -->
+        <div class="absolute inset-0 z-0">
+          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&auto=format&fit=crop&q=85" 
+               alt="Fine dining restaurant ambiance" 
+               class="w-full h-full object-cover opacity-25 filter brightness-75">
+          <div class="absolute inset-0 bg-gradient-to-t from-charcoal-950 via-charcoal-950/80 to-transparent"></div>
+          <div class="hero-glow absolute inset-0"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <!-- Tagline Badge -->
+          <div class="inline-flex items-center space-x-2 bg-charcoal-800/80 border border-gold-500/30 px-4 py-1.5 rounded-full mb-6 backdrop-blur-md">
+            <span class="w-2 h-2 rounded-full bg-gold-400 animate-pulse"></span>
+            <span class="text-xs uppercase tracking-widest text-gold-400 font-semibold">Trained with Random Forest Regressor &bull; 95.9% R² Score</span>
+          </div>
+
+          <!-- Main Title -->
+          <h1 class="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.15] max-w-4xl mx-auto">
+            Discover the Taste. <br>
+            <span class="terracotta-gradient-text italic font-normal">Predict the Experience.</span>
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="mt-6 text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
+            Harness the power of Machine Learning to analyze dining trends, uncover culinary performance factors, and estimate aggregate customer ratings with statistical precision.
+          </p>
+
+          <!-- CTA Buttons -->
+          <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button @click="activeTab = 'explorer'" class="w-full sm:w-auto px-8 py-4 rounded-full bg-terracotta-600 hover:bg-terracotta-500 text-white font-semibold text-base shadow-xl shadow-terracotta-600/30 transition-all flex items-center justify-center space-x-2 transform hover:-translate-y-0.5">
+              <i data-lucide="compass" class="w-5 h-5"></i>
+              <span>Explore Restaurants</span>
+            </button>
+            <button @click="activeTab = 'predict'" class="w-full sm:w-auto px-8 py-4 rounded-full bg-charcoal-800/80 hover:bg-charcoal-800 border border-white/20 text-white font-semibold text-base backdrop-blur-md transition-all flex items-center justify-center space-x-2 transform hover:-translate-y-0.5">
+              <i data-lucide="sparkles" class="w-5 h-5 text-gold-400"></i>
+              <span>Predict Rating Now</span>
+            </button>
+          </div>
+
+          <!-- Key Dataset Stats Bar -->
+          <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <div class="bg-charcoal-900/70 border border-charcoal-800 rounded-2xl p-6 backdrop-blur-sm">
+              <div class="text-3xl lg:text-4xl font-serif font-bold text-white" x-text="stats.total_restaurants ? stats.total_restaurants.toLocaleString() : '9,551'">9,551</div>
+              <div class="text-xs uppercase tracking-wider text-gray-400 mt-1 font-medium">Global Restaurants</div>
+            </div>
+            <div class="bg-charcoal-900/70 border border-charcoal-800 rounded-2xl p-6 backdrop-blur-sm">
+              <div class="text-3xl lg:text-4xl font-serif font-bold text-gold-400" x-text="stats.total_cities ? stats.total_cities.toLocaleString() : '141'">141</div>
+              <div class="text-xs uppercase tracking-wider text-gray-400 mt-1 font-medium">Unique Cities</div>
+            </div>
+            <div class="bg-charcoal-900/70 border border-charcoal-800 rounded-2xl p-6 backdrop-blur-sm">
+              <div class="text-3xl lg:text-4xl font-serif font-bold text-terracotta-500" x-text="stats.rated_average_rating ? stats.rated_average_rating.toFixed(2) : '3.44'">3.44</div>
+              <div class="text-xs uppercase tracking-wider text-gray-400 mt-1 font-medium">Average Star Rating</div>
+            </div>
+            <div class="bg-charcoal-900/70 border border-charcoal-800 rounded-2xl p-6 backdrop-blur-sm">
+              <div class="text-3xl lg:text-4xl font-serif font-bold text-emerald-400">0.9592</div>
+              <div class="text-xs uppercase tracking-wider text-gray-400 mt-1 font-medium">Random Forest R² Score</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Restaurants Showcase with Warm Tone Backdrop -->
+      <section class="py-20 bg-page-home border-t border-[#E8E2D6]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+            <div>
+              <span class="text-terracotta-600 font-semibold tracking-wider text-xs uppercase">Curated Discovery</span>
+              <h2 class="font-serif text-3xl sm:text-4xl font-bold text-charcoal-text mt-1">Top-Rated Culinary Destinations</h2>
+            </div>
+            <button @click="activeTab = 'explorer'" class="mt-4 md:mt-0 text-terracotta-600 hover:text-terracotta-700 font-semibold flex items-center space-x-1 group text-sm">
+              <span>View all 9,551 restaurants</span>
+              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+            </button>
+          </div>
+
+          <!-- Featured Cards Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <template x-for="r in featuredRestaurants" :key="r.id">
+              <div class="bg-white rounded-2xl overflow-hidden border border-[#E8E2D6] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col cursor-pointer group"
+                   @click="openDetails(r.id)">
+                <!-- Image Header -->
+                <div class="relative h-56 overflow-hidden">
+                  <img :src="r.image_url" :alt="r.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+                  <!-- Rating Badge -->
+                  <div class="absolute top-4 right-4 bg-charcoal-900/90 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1 backdrop-blur-md">
+                    <i data-lucide="star" class="w-3.5 h-3.5 fill-gold-400 text-gold-400"></i>
+                    <span x-text="r.aggregate_rating.toFixed(1)">4.8</span>
+                  </div>
+                  <!-- Cuisine Tag -->
+                  <div class="absolute bottom-4 left-4 bg-white/95 text-charcoal-text px-2.5 py-0.5 rounded-md text-xs font-semibold backdrop-blur-sm shadow-sm" x-text="r.primary_cuisine">
+                    North Indian
+                  </div>
+                </div>
+
+                <!-- Card Body -->
+                <div class="p-6 flex-grow flex flex-col justify-between">
+                  <div>
+                    <h3 class="font-serif text-xl font-bold text-charcoal-text line-clamp-1 group-hover:text-terracotta-600 transition-colors" x-text="r.name">Le Petit Souffle</h3>
+                    <p class="text-xs text-charcoal-muted mt-1 flex items-center space-x-1">
+                      <i data-lucide="map-pin" class="w-3.5 h-3.5 text-terracotta-500"></i>
+                      <span x-text="`${r.locality}, ${r.city}`">Makati City</span>
+                    </p>
+                    <p class="text-xs text-charcoal-muted mt-3 line-clamp-2" x-text="r.cuisines">French, Japanese, Desserts</p>
+                  </div>
+
+                  <div class="mt-6 pt-4 border-t border-[#F0EAE0] flex items-center justify-between text-xs text-charcoal-muted">
+                    <div>
+                      <span class="text-gray-400 block text-[11px]">Cost for Two</span>
+                      <span class="font-semibold text-charcoal-text text-sm" x-text="`${r.average_cost.toLocaleString()} ${r.currency}`">1100 Pula</span>
+                    </div>
+                    <div class="text-right">
+                      <span class="text-gray-400 block text-[11px]">Reviews</span>
+                      <span class="font-semibold text-charcoal-text text-sm" x-text="`${r.votes.toLocaleString()} votes`">314 votes</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </section>
+
+      <!-- Popular Cuisines Visual Grid -->
+      <section class="py-20 bg-[#F2EDE2] border-t border-[#E5DDD0]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center max-w-2xl mx-auto mb-16">
+            <span class="text-terracotta-600 font-semibold tracking-wider text-xs uppercase">Culinary Diversity</span>
+            <h2 class="font-serif text-3xl sm:text-4xl font-bold text-charcoal-text mt-1">Explore by Specialty</h2>
+            <p class="text-sm text-charcoal-muted mt-2">Browse the most prominent culinary styles present in the dataset.</p>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <template x-for="c in popularCuisines" :key="c.name">
+              <div class="bg-white rounded-xl p-4 border border-[#E2D8CA] shadow-sm text-center hover:shadow-md hover:border-terracotta-500/50 transition-all cursor-pointer group"
+                   @click="filterByCuisineAndExplore(c.name)">
+                <div class="w-16 h-16 mx-auto rounded-full overflow-hidden mb-3 group-hover:scale-110 transition-transform shadow-sm">
+                  <img :src="c.img" :alt="c.name" class="w-full h-full object-cover">
+                </div>
+                <h4 class="font-semibold text-sm text-charcoal-text group-hover:text-terracotta-600 transition-colors" x-text="c.name">North Indian</h4>
+                <p class="text-[11px] text-charcoal-muted mt-0.5" x-text="`${c.count.toLocaleString()} Venues`">936 Venues</p>
+              </div>
+            </template>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Call to Action Banner -->
+      <section class="py-20 bg-charcoal-900 text-white relative overflow-hidden">
+        <div class="hero-glow absolute inset-0 opacity-40"></div>
+        <div class="relative z-10 max-w-5xl mx-auto px-4 text-center">
+          <span class="text-gold-400 font-semibold text-xs tracking-widest uppercase">Machine Learning In Action</span>
+          <h2 class="font-serif text-3xl sm:text-5xl font-bold mt-2 text-white">Predict Your Restaurant's Potential Rating</h2>
+          <p class="text-gray-300 mt-4 max-w-2xl mx-auto text-sm sm:text-base">
+            Entering the restaurant market or expanding your concept? Use our trained Random Forest model to estimate aggregate ratings based on location, pricing, menu breadth, and service convenience.
+          </p>
+          <div class="mt-8">
+            <button @click="activeTab = 'predict'" class="px-8 py-4 rounded-full bg-terracotta-600 hover:bg-terracotta-500 text-white font-semibold shadow-lg shadow-terracotta-600/30 transition-all transform hover:scale-105">
+              Launch Rating Predictor &rarr;
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 2: RESTAURANT EXPLORER                                             -->
+    <!-- PAGE BACKGROUND: Warm Beige (#F2E9DC)                                   -->
+    <!-- ======================================================================= -->
+    <div x-show="activeTab === 'explorer'" 
+         class="page-fade-enter py-12 min-h-[calc(100vh-80px)]"
+         style="background-color: #F2E9DC;">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="mb-8">
+          <span class="text-terracotta-700 font-bold tracking-wider text-xs uppercase">Culinary Discovery Engine</span>
+          <h1 class="font-serif text-3xl sm:text-4xl font-bold text-charcoal-text mt-1">Restaurant Explorer</h1>
+          <p class="text-sm text-charcoal-muted mt-1">Filter, search, and examine 9,551 authentic restaurant profiles from the dataset.</p>
+        </div>
+
+        <!-- Filter Controls Bar (Contrasting Light Surface) -->
+        <div class="bg-white/95 rounded-2xl p-6 border border-[#E0D4C3] shadow-[0_4px_16px_-2px_rgba(100,75,50,0.06)] mb-10 backdrop-blur-sm">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <!-- Search Input -->
+            <div class="lg:col-span-2">
+              <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">Search Name / Locality</label>
+              <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 text-charcoal-muted absolute left-3.5 top-3"></i>
+                <input type="text" x-model="explorerFilters.search" @input.debounce.400ms="fetchRestaurants(1)" placeholder="e.g. Cafe, Pizza, New Delhi..." class="w-full bg-[#FAF7F2] border border-[#DDD0BF] rounded-lg pl-10 pr-4 py-2 text-sm text-charcoal-text placeholder-gray-400 focus:outline-none focus:border-terracotta-600 focus:ring-1 focus:ring-terracotta-600">
+              </div>
+            </div>
+
+            <!-- City Filter -->
+            <div>
+              <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">City</label>
+              <select x-model="explorerFilters.city" @change="fetchRestaurants(1)" class="w-full bg-[#FAF7F2] border border-[#DDD0BF] rounded-lg px-3 py-2 text-sm text-charcoal-text focus:outline-none focus:border-terracotta-600 focus:ring-1 focus:ring-terracotta-600">
+                <option value="All">All Cities</option>
+                <option value="New Delhi">New Delhi</option>
+                <option value="Gurgaon">Gurgaon</option>
+                <option value="Noida">Noida</option>
+                <option value="Faridabad">Faridabad</option>
+                <option value="Ghaziabad">Ghaziabad</option>
+                <option value="Ahmedabad">Ahmedabad</option>
+                <option value="Lucknow">Lucknow</option>
+                <option value="Bhubaneshwar">Bhubaneshwar</option>
+                <option value="Amritsar">Amritsar</option>
+                <option value="Guwahati">Guwahati</option>
+                <option value="London">London</option>
+                <option value="Manchester">Manchester</option>
+                <option value="Makati City">Makati City</option>
+              </select>
+            </div>
+
+            <!-- Price Tier -->
+            <div>
+              <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">Price Tier</label>
+              <select x-model="explorerFilters.price_range" @change="fetchRestaurants(1)" class="w-full bg-[#FAF7F2] border border-[#DDD0BF] rounded-lg px-3 py-2 text-sm text-charcoal-text focus:outline-none focus:border-terracotta-600 focus:ring-1 focus:ring-terracotta-600">
+                <option value="">All Tiers</option>
+                <option value="1">Tier 1: Budget ($)</option>
+                <option value="2">Tier 2: Moderate ($$)</option>
+                <option value="3">Tier 3: Expensive ($$$)</option>
+                <option value="4">Tier 4: Luxury ($$$$)</option>
+              </select>
+            </div>
+
+            <!-- Sort By -->
+            <div>
+              <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">Sort Results</label>
+              <select x-model="explorerFilters.sort_by" @change="fetchRestaurants(1)" class="w-full bg-[#FAF7F2] border border-[#DDD0BF] rounded-lg px-3 py-2 text-sm text-charcoal-text focus:outline-none focus:border-terracotta-600 focus:ring-1 focus:ring-terracotta-600">
+                <option value="rating_desc">Highest Rating</option>
+                <option value="votes_desc">Most Votes</option>
+                <option value="cost_asc">Lowest Cost</option>
+                <option value="cost_desc">Highest Cost</option>
+                <option value="rating_asc">Lowest Rating</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Restaurant Cards Display with Contrasting Light Cards -->
+        <div class="relative">
+          <!-- Loading State Indicator -->
+          <div x-show="loadingRestaurants" class="text-center py-20">
+            <div class="w-12 h-12 border-4 border-terracotta-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p class="text-sm font-semibold text-charcoal-text mt-4">Loading real restaurant records...</p>
+          </div>
+
+          <!-- Empty Results State -->
+          <div x-show="!loadingRestaurants && restaurants.length === 0" class="text-center py-20 bg-white rounded-2xl border border-[#E0D4C3] shadow-sm">
+            <i data-lucide="utensils-crossed" class="w-12 h-12 text-charcoal-muted mx-auto mb-3"></i>
+            <h3 class="font-serif text-lg font-bold text-charcoal-text">No restaurants match your filters</h3>
+            <p class="text-xs text-charcoal-muted mt-1">Try resetting your search query or loosening price/city filters.</p>
+          </div>
+
+          <!-- Cards Grid: Contrasting Light Card Background -->
+          <div x-show="!loadingRestaurants && restaurants.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <template x-for="r in restaurants" :key="r.id">
+              <div class="bg-white rounded-2xl overflow-hidden border border-[#E3D7C7] shadow-[0_4px_14px_-2px_rgba(100,75,50,0.07)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col cursor-pointer group"
+                   @click="openDetails(r.id)">
+                <!-- Card Image Banner: Vibrant and Attractive -->
+                <div class="relative h-48 overflow-hidden bg-charcoal-900">
+                  <img :src="r.image_url" :alt="r.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                  
+                  <!-- Rating Badge -->
+                  <div class="absolute top-3 right-3 text-white px-2.5 py-0.5 rounded-full text-xs font-bold flex items-center space-x-1 shadow-md"
+                       :style="`background-color: ${r.rating_color}`">
+                    <i data-lucide="star" class="w-3 h-3 fill-white text-white"></i>
+                    <span x-text="r.aggregate_rating > 0 ? r.aggregate_rating.toFixed(1) : 'New'">4.5</span>
+                  </div>
+
+                  <!-- Location Snippet -->
+                  <div class="absolute bottom-3 left-3 text-white text-xs font-semibold drop-shadow-md flex items-center space-x-1">
+                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gold-400"></i>
+                    <span x-text="`${r.locality}, ${r.city}`">Connaught Place</span>
+                  </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="p-5 flex-grow flex flex-col justify-between">
+                  <div>
+                    <div class="flex items-start justify-between">
+                      <h3 class="font-serif text-lg font-bold text-charcoal-text line-clamp-1 group-hover:text-terracotta-600 transition-colors" x-text="r.name">Restaurant Name</h3>
+                      <span class="text-[11px] font-bold text-terracotta-700 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded ml-2 whitespace-nowrap" x-text="`Tier ${r.price_range}`">Tier 2</span>
+                    </div>
+                    <p class="text-xs text-charcoal-muted mt-1.5 line-clamp-1 font-medium" x-text="r.cuisines">North Indian, Mughlai, Chinese</p>
+                  </div>
+
+                  <div class="mt-5 pt-3.5 border-t border-[#F0E6D8] flex items-center justify-between text-xs text-charcoal-muted">
+                    <div>
+                      <span class="text-gray-400 block text-[11px]">Cost for Two</span>
+                      <span class="font-bold text-charcoal-text text-sm" x-text="`${r.average_cost.toLocaleString()} ${r.currency}`">800 INR</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <span x-show="r.has_online_delivery === 'Yes'" title="Online Delivery" class="px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-bold flex items-center space-x-0.5">
+                        <i data-lucide="truck" class="w-3 h-3"></i>
+                        <span>Delivery</span>
+                      </span>
+                      <span x-show="r.has_table_booking === 'Yes'" title="Table Booking" class="px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold flex items-center space-x-0.5">
+                        <i data-lucide="calendar" class="w-3 h-3"></i>
+                        <span>Booking</span>
+                      </span>
+                      <span class="text-charcoal-muted text-[11px] font-medium" x-text="`${r.votes.toLocaleString()} votes`">120 votes</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div class="mt-12 flex items-center justify-between bg-white rounded-xl p-4 border border-[#E3D7C7] shadow-sm">
+            <div class="text-xs font-medium text-charcoal-muted" x-text="`Showing page ${currentPage} of ${totalPages} (${totalRecords.toLocaleString()} total restaurants)`">
+              Showing page 1 of 800
+            </div>
+            <div class="flex items-center space-x-2">
+              <button @click="fetchRestaurants(currentPage - 1)" :disabled="currentPage <= 1" class="px-3 py-1.5 rounded-lg border border-[#DDD0BF] text-xs font-semibold text-charcoal-text hover:bg-[#FAF7F2] disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-1 transition-colors">
+                <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+                <span>Previous</span>
+              </button>
+              <button @click="fetchRestaurants(currentPage + 1)" :disabled="currentPage >= totalPages" class="px-3 py-1.5 rounded-lg border border-[#DDD0BF] text-xs font-semibold text-charcoal-text hover:bg-[#FAF7F2] disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-1 transition-colors">
+                <span>Next</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 3: RESTAURANT DETAILS MODAL                                        -->
+    <!-- ======================================================================= -->
+    <div x-show="detailsModalOpen" x-transition.opacity class="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+      <div @click.away="detailsModalOpen = false" class="bg-white rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl border border-[#DDD0BF] my-8">
+        
+        <!-- Header Image Banner -->
+        <div class="relative h-72">
+          <img :src="selectedRestaurant.image_url" :alt="selectedRestaurant.name" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+          
+          <!-- Close Button -->
+          <button @click="detailsModalOpen = false" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black transition-colors">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+
+          <!-- Title Overlay -->
+          <div class="absolute bottom-6 left-6 right-6 text-white">
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="px-2.5 py-0.5 rounded bg-terracotta-600 text-white text-xs font-bold uppercase tracking-wider" x-text="selectedRestaurant.primary_cuisine">Italian</span>
+              <span class="px-2.5 py-0.5 rounded bg-white/20 backdrop-blur-md text-white text-xs font-semibold" x-text="`Price Tier ${selectedRestaurant.price_range}`">Tier 3</span>
+            </div>
+            <h2 class="font-serif text-3xl font-bold leading-tight" x-text="selectedRestaurant.name">Restaurant Name</h2>
+            <p class="text-xs text-gray-200 mt-1 flex items-center space-x-1">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gold-400"></i>
+              <span x-text="`${selectedRestaurant.address || selectedRestaurant.locality}, ${selectedRestaurant.city}, ${selectedRestaurant.country}`">New Delhi</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Body Details -->
+        <div class="p-8 space-y-6">
+          <!-- Rating Highlight Box -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-[#FAF7F2] rounded-2xl p-4 border border-[#E8E0D5]">
+            <div class="text-center sm:border-r border-[#E0D7CA]">
+              <span class="text-xs uppercase text-charcoal-muted font-bold block">Aggregate Rating</span>
+              <div class="text-3xl font-serif font-bold text-charcoal-text mt-1 flex items-center justify-center space-x-1">
+                <i data-lucide="star" class="w-6 h-6 fill-gold-500 text-gold-500"></i>
+                <span x-text="selectedRestaurant.aggregate_rating ? selectedRestaurant.aggregate_rating.toFixed(1) : 'N/A'">4.5</span>
+                <span class="text-xs text-charcoal-muted font-sans font-normal">/ 5.0</span>
+              </div>
+              <span class="inline-block mt-1 px-2.5 py-0.5 rounded-full text-xs font-bold"
+                    :class="selectedRestaurant.badge_class"
+                    x-text="selectedRestaurant.rating_label">Very Good</span>
+            </div>
+            <div class="text-center sm:border-r border-[#E0D7CA]">
+              <span class="text-xs uppercase text-charcoal-muted font-bold block">Customer Feedback</span>
+              <div class="text-2xl font-bold text-charcoal-text mt-2" x-text="selectedRestaurant.votes ? selectedRestaurant.votes.toLocaleString() : '0'">450</div>
+              <span class="text-xs text-charcoal-muted block font-medium">Verified Customer Votes</span>
+            </div>
+            <div class="text-center">
+              <span class="text-xs uppercase text-charcoal-muted font-bold block">Average Cost for Two</span>
+              <div class="text-2xl font-bold text-charcoal-text mt-2" x-text="selectedRestaurant.average_cost ? `${selectedRestaurant.average_cost.toLocaleString()} ${selectedRestaurant.currency}` : 'N/A'">1,200 INR</div>
+              <span class="text-xs text-charcoal-muted block font-medium">Estimated dining cost</span>
+            </div>
+          </div>
+
+          <!-- Cuisines & Operational Details -->
+          <div class="space-y-4 text-sm text-charcoal-text">
+            <div>
+              <h4 class="font-bold text-xs uppercase tracking-wider text-charcoal-muted mb-1">Cuisines Served</h4>
+              <p class="font-serif text-base text-charcoal-text font-semibold" x-text="selectedRestaurant.cuisines">North Indian, Mughlai, Continental</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 pt-2">
+              <div class="bg-[#FAF7F2] p-3.5 rounded-xl border border-[#E8E0D5] flex items-center space-x-3">
+                <i data-lucide="truck" class="w-5 h-5 text-terracotta-600"></i>
+                <div>
+                  <span class="text-xs text-charcoal-muted block font-medium">Online Delivery</span>
+                  <span class="font-bold text-xs text-charcoal-text" x-text="selectedRestaurant.has_online_delivery === 'Yes' ? 'Available for Delivery' : 'Dine-In Only'">Available</span>
+                </div>
+              </div>
+              <div class="bg-[#FAF7F2] p-3.5 rounded-xl border border-[#E8E0D5] flex items-center space-x-3">
+                <i data-lucide="calendar" class="w-5 h-5 text-gold-600"></i>
+                <div>
+                  <span class="text-xs text-charcoal-muted block font-medium">Table Reservation</span>
+                  <span class="font-bold text-xs text-charcoal-text" x-text="selectedRestaurant.has_table_booking === 'Yes' ? 'Table Booking Available' : 'Walk-In Dining'">Walk-In Dining</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Actions -->
+          <div class="pt-4 border-t border-[#F0EAE0] flex items-center justify-between">
+            <span class="text-xs text-charcoal-muted font-medium">Restaurant ID: #<span x-text="selectedRestaurant.id">12345</span></span>
+            <button @click="detailsModalOpen = false" class="px-6 py-2.5 rounded-full bg-charcoal-900 text-white text-xs font-semibold hover:bg-black transition-colors">
+              Close Profile
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 4: AI RESTAURANT RATING PREDICTION                                 -->
+    <!-- PAGE BACKGROUND: Soft Sage Green (#E8F0E8)                              -->
+    <!-- ======================================================================= -->
+    <div x-show="activeTab === 'predict'" 
+         class="page-fade-enter py-12 min-h-[calc(100vh-80px)]"
+         style="background-color: #E8F0E8;">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="text-sage-700 font-bold tracking-wider text-xs uppercase">Random Forest Predictive Engine</span>
+          <h1 class="font-serif text-3xl sm:text-4xl font-bold text-charcoal-text mt-1">Predict Restaurant Aggregate Rating</h1>
+          <p class="text-sm text-charcoal-muted mt-2">
+            Supply restaurant parameters below to generate an empirical model-estimated aggregate score using deep green and muted gold indicators.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <!-- Input Form Column (Clean Contrasting White Surface) -->
+          <div class="lg:col-span-7 bg-white rounded-2xl p-6 sm:p-8 border border-[#CCDACC] shadow-[0_4px_20px_-4px_rgba(30,60,40,0.08)]">
+            <h3 class="font-serif text-xl font-bold text-charcoal-text mb-6 flex items-center space-x-2">
+              <div class="w-8 h-8 rounded-lg bg-sage-100 flex items-center justify-center text-sage-700">
+                <i data-lucide="sliders" class="w-4 h-4"></i>
+              </div>
+              <span>Restaurant Parameters</span>
+            </h3>
+
+            <form @submit.prevent="submitPrediction()" class="space-y-5">
+              
+              <!-- Location Row -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">Country</label>
+                  <select x-model="predictionForm.country" class="w-full bg-[#F7FAF7] border border-[#CCDACC] rounded-lg px-3.5 py-2.5 text-sm text-charcoal-text focus:outline-none focus:border-sage-600 focus:ring-1 focus:ring-sage-600">
+                    <option value="India">India</option>
+                    <option value="United States">United States</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="United Arab Emirates">United Arab Emirates</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Brazil">Brazil</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="Philippines">Philippines</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">City</label>
+                  <input type="text" x-model="predictionForm.city" required placeholder="e.g. New Delhi" class="w-full bg-[#F7FAF7] border border-[#CCDACC] rounded-lg px-3.5 py-2.5 text-sm text-charcoal-text focus:outline-none focus:border-sage-600 focus:ring-1 focus:ring-sage-600">
+                </div>
+              </div>
+
+              <!-- Locality & Cuisines -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">Locality / Area</label>
+                  <input type="text" x-model="predictionForm.locality" required placeholder="e.g. Connaught Place" class="w-full bg-[#F7FAF7] border border-[#CCDACC] rounded-lg px-3.5 py-2.5 text-sm text-charcoal-text focus:outline-none focus:border-sage-600 focus:ring-1 focus:ring-sage-600">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">Cuisines (Comma Separated)</label>
+                  <input type="text" x-model="predictionForm.cuisines" required placeholder="e.g. North Indian, Mughlai" class="w-full bg-[#F7FAF7] border border-[#CCDACC] rounded-lg px-3.5 py-2.5 text-sm text-charcoal-text focus:outline-none focus:border-sage-600 focus:ring-1 focus:ring-sage-600">
+                </div>
+              </div>
+
+              <!-- Pricing Row -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">Average Cost for Two</label>
+                  <input type="number" x-model.number="predictionForm.average_cost_for_two" min="10" max="200000" step="50" required class="w-full bg-[#F7FAF7] border border-[#CCDACC] rounded-lg px-3.5 py-2.5 text-sm text-charcoal-text focus:outline-none focus:border-sage-600 focus:ring-1 focus:ring-sage-600">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">Price Range Tier</label>
+                  <select x-model.number="predictionForm.price_range" class="w-full bg-[#F7FAF7] border border-[#CCDACC] rounded-lg px-3.5 py-2.5 text-sm text-charcoal-text focus:outline-none focus:border-sage-600 focus:ring-1 focus:ring-sage-600">
+                    <option value="1">1: Budget ($)</option>
+                    <option value="2">2: Moderate ($$)</option>
+                    <option value="3">3: Expensive ($$$)</option>
+                    <option value="4">4: Luxury ($$$$)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Services & Votes -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">Online Delivery</label>
+                  <select x-model="predictionForm.has_online_delivery" class="w-full bg-[#F7FAF7] border border-[#CCDACC] rounded-lg px-3.5 py-2.5 text-sm text-charcoal-text focus:outline-none focus:border-sage-600 focus:ring-1 focus:ring-sage-600">
+                    <option value="Yes">Yes (Available)</option>
+                    <option value="No">No (Dine-in only)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">Table Booking</label>
+                  <select x-model="predictionForm.has_table_booking" class="w-full bg-[#F7FAF7] border border-[#CCDACC] rounded-lg px-3.5 py-2.5 text-sm text-charcoal-text focus:outline-none focus:border-sage-600 focus:ring-1 focus:ring-sage-600">
+                    <option value="No">No (Walk-in only)</option>
+                    <option value="Yes">Yes (Reservations)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-charcoal-text mb-1.5">Review Votes</label>
+                  <input type="number" x-model.number="predictionForm.votes" min="0" max="25000" step="10" required class="w-full bg-[#F7FAF7] border border-[#CCDACC] rounded-lg px-3.5 py-2.5 text-sm text-charcoal-text focus:outline-none focus:border-sage-600 focus:ring-1 focus:ring-sage-600">
+                </div>
+              </div>
+
+              <!-- Submit Button in Deep Green & Gold Gradient -->
+              <div class="pt-4">
+                <button type="submit" :disabled="predicting" class="w-full py-4 rounded-xl bg-gradient-to-r from-sage-700 via-sage-600 to-gold-600 hover:from-sage-800 hover:to-gold-500 text-white font-bold text-base shadow-lg shadow-sage-700/25 transition-all flex items-center justify-center space-x-2 disabled:opacity-50 transform hover:-translate-y-0.5 active:translate-y-0">
+                  <span x-show="!predicting" class="flex items-center space-x-2">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-gold-300"></i>
+                    <span>Generate AI Rating Prediction</span>
+                  </span>
+                  <span x-show="predicting" class="flex items-center space-x-2">
+                    <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Processing with Random Forest...</span>
+                  </span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Prediction Result Column (Standout Card with Deep Green & Muted Gold) -->
+          <div class="lg:col-span-5 space-y-6">
+            
+            <!-- Result Card -->
+            <div class="bg-gradient-to-br from-sage-900 via-charcoal-900 to-sage-950 text-white rounded-3xl p-8 border border-gold-500/30 shadow-2xl relative overflow-hidden">
+              <div class="absolute -top-12 -right-12 w-44 h-44 rounded-full bg-gold-500/10 blur-2xl"></div>
+              
+              <div class="relative z-10 text-center">
+                <span class="text-[11px] uppercase tracking-widest text-gold-400 font-bold block mb-2">Predicted Aggregate Rating</span>
+                
+                <!-- Rating Score -->
+                <div class="font-serif text-6xl sm:text-7xl font-bold tracking-tight text-white my-3" x-text="predictionResult.predicted_rating ? predictionResult.predicted_rating.toFixed(2) : '3.85'">
+                  3.85
+                </div>
+
+                <!-- Rating Badge -->
+                <div class="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4 shadow-md bg-gradient-to-r from-emerald-600 to-gold-600 text-white"
+                     x-text="predictionResult.rating_label || 'Good'">
+                  Good
+                </div>
+
+                <!-- Star Rating Representation -->
+                <div class="flex items-center justify-center space-x-1.5 text-gold-400 mb-6">
+                  <i data-lucide="star" class="w-5 h-5 fill-gold-400 text-gold-400"></i>
+                  <i data-lucide="star" class="w-5 h-5 fill-gold-400 text-gold-400"></i>
+                  <i data-lucide="star" class="w-5 h-5 fill-gold-400 text-gold-400"></i>
+                  <i data-lucide="star" class="w-5 h-5 fill-gold-400 text-gold-400"></i>
+                  <i data-lucide="star-half" class="w-5 h-5 fill-gold-400 text-gold-400"></i>
+                </div>
+
+                <!-- Rating Meter Scale -->
+                <div class="space-y-1.5 mb-6 text-left">
+                  <div class="flex justify-between text-[11px] text-gray-300 font-semibold">
+                    <span>0.0 (Unrated)</span>
+                    <span>2.5 (Avg)</span>
+                    <span>5.0 (Flawless)</span>
+                  </div>
+                  <div class="w-full h-3 bg-charcoal-800 rounded-full overflow-hidden p-0.5 border border-white/10">
+                    <div class="h-full rounded-full transition-all duration-700 bg-gradient-to-r from-emerald-500 via-gold-400 to-amber-300"
+                         :style="`width: ${(predictionResult.predicted_rating || 3.85) * 20}%`"></div>
+                  </div>
+                </div>
+
+                <!-- Strategic Takeaways -->
+                <div class="bg-black/40 border border-white/10 rounded-2xl p-4 text-left space-y-2">
+                  <span class="text-xs font-bold text-gold-400 uppercase tracking-wider block">Operational Insights:</span>
+                  <template x-for="(adv, i) in (predictionResult.operational_advice || ['Strong operational positioning based on dining parameters.'])" :key="i">
+                    <p class="text-xs text-gray-200 leading-relaxed flex items-start space-x-2">
+                      <span class="text-gold-400 font-bold">&bull;</span>
+                      <span x-text="adv"></span>
+                    </p>
+                  </template>
+                </div>
+
+                <!-- Algorithm Badge -->
+                <div class="mt-6 pt-4 border-t border-white/10 text-[11px] text-gray-300">
+                  Model: <span class="text-gold-300 font-semibold">Random Forest Regressor (150 trees)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Disclaimer Notice -->
+            <div class="bg-white/85 rounded-2xl p-4 border border-[#CCDACC] text-xs text-charcoal-muted flex items-start space-x-2.5 shadow-sm">
+              <i data-lucide="info" class="w-4 h-4 text-sage-600 flex-shrink-0 mt-0.5"></i>
+              <p>
+                <strong class="text-charcoal-text">Predictive Disclaimer:</strong> This estimated aggregate rating is generated empirically by the Random Forest model using historical restaurant patterns. It reflects statistical association and should not be confused with actual customer reviews or official platform awards.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 5: MODEL PERFORMANCE                                               -->
+    <!-- PAGE BACKGROUND: Soft Lavender (#E9EAF4)                                -->
+    <!-- ======================================================================= -->
+    <div x-show="activeTab === 'performance'" 
+         class="page-fade-enter py-12 min-h-[calc(100vh-80px)]"
+         style="background-color: #E9EAF4;">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="mb-10">
+          <span class="text-lavender-600 font-bold tracking-wider text-xs uppercase">Evaluation & Generalization Environment</span>
+          <h1 class="font-serif text-3xl sm:text-4xl font-bold text-charcoal-text mt-1">Random Forest Model Performance</h1>
+          <p class="text-sm text-charcoal-muted mt-1">
+            Exclusively trained with Random Forest Regressor. Evaluated on 1,911 held-out test records (20% split, random_state=42).
+          </p>
+        </div>
+
+        <!-- 4 Core Metrics Cards (Contrasting Crisp White Surfaces) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div class="bg-white rounded-2xl p-6 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)]">
+            <span class="text-xs uppercase tracking-wider text-charcoal-muted font-bold">R-Squared (R²)</span>
+            <div class="text-4xl font-serif font-bold text-charcoal-text mt-2">0.9592</div>
+            <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">95.92% Variance Explained</span>
+            <p class="text-[11px] text-charcoal-muted mt-2">Measures proportion of variation in restaurant rating captured by the Random Forest model.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)]">
+            <span class="text-xs uppercase tracking-wider text-charcoal-muted font-bold">Root Mean Squared Error (RMSE)</span>
+            <div class="text-4xl font-serif font-bold text-charcoal-text mt-2">0.3047</div>
+            <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">±0.30 Rating Points</span>
+            <p class="text-[11px] text-charcoal-muted mt-2">Standard deviation of residuals; penalizes larger forecast deviations quadratically.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)]">
+            <span class="text-xs uppercase tracking-wider text-charcoal-muted font-bold">Mean Absolute Error (MAE)</span>
+            <div class="text-4xl font-serif font-bold text-charcoal-text mt-2">0.1991</div>
+            <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800">Average Error: ~0.20</span>
+            <p class="text-[11px] text-charcoal-muted mt-2">Average absolute difference between actual aggregate rating and Random Forest prediction.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)]">
+            <span class="text-xs uppercase tracking-wider text-charcoal-muted font-bold">Mean Squared Error (MSE)</span>
+            <div class="text-4xl font-serif font-bold text-charcoal-text mt-2">0.0928</div>
+            <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-800">Squared Deviations</span>
+            <p class="text-[11px] text-charcoal-muted mt-2">Mean squared error computed on the 1,911 testing instances.</p>
+          </div>
+        </div>
+
+        <!-- Training vs Testing Performance Table -->
+        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)] mb-12">
+          <h3 class="font-serif text-xl font-bold text-charcoal-text mb-4">Training vs. Testing Overfitting Inspection</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-charcoal-text">
+              <thead class="bg-[#F0F1FA] text-xs uppercase tracking-wider text-charcoal-muted border-b border-[#D5D7E8]">
+                <tr>
+                  <th class="py-3 px-4 font-bold">Evaluation Dataset</th>
+                  <th class="py-3 px-4 font-bold">Sample Size</th>
+                  <th class="py-3 px-4 font-bold">R-Squared (R²)</th>
+                  <th class="py-3 px-4 font-bold">RMSE</th>
+                  <th class="py-3 px-4 font-bold">MAE</th>
+                  <th class="py-3 px-4 font-bold">MSE</th>
+                  <th class="py-3 px-4 font-bold">Generalization Analysis</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#E9EAF4]">
+                <tr>
+                  <td class="py-3.5 px-4 font-bold text-charcoal-text">Training Data (80%)</td>
+                  <td class="py-3.5 px-4 text-charcoal-muted">7,640 records</td>
+                  <td class="py-3.5 px-4 font-mono font-bold text-indigo-700">0.9798</td>
+                  <td class="py-3.5 px-4 font-mono">0.2156</td>
+                  <td class="py-3.5 px-4 font-mono">0.1382</td>
+                  <td class="py-3.5 px-4 font-mono">0.0465</td>
+                  <td class="py-3.5 px-4 text-xs text-charcoal-muted">Fitted via 5-Fold Cross Validation</td>
+                </tr>
+                <tr>
+                  <td class="py-3.5 px-4 font-bold text-charcoal-text">Testing Data (20%)</td>
+                  <td class="py-3.5 px-4 text-charcoal-muted">1,911 records</td>
+                  <td class="py-3.5 px-4 font-mono font-bold text-terracotta-600">0.9592</td>
+                  <td class="py-3.5 px-4 font-mono">0.3047</td>
+                  <td class="py-3.5 px-4 font-mono">0.1991</td>
+                  <td class="py-3.5 px-4 font-mono">0.0928</td>
+                  <td class="py-3.5 px-4 text-xs font-bold text-emerald-700">Near-zero overfitting gap (&Delta; R² = 0.02)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Diagnostic Evaluation Visual Gallery (White Cards for Clear Contrast) -->
+        <div class="space-y-6">
+          <h3 class="font-serif text-2xl font-bold text-charcoal-text">Diagnostic Visualizations Gallery</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-2xl p-6 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)]">
+              <h4 class="font-serif text-lg font-bold text-charcoal-text mb-1">1. Actual vs. Predicted Restaurant Ratings</h4>
+              <p class="text-xs text-charcoal-muted mb-4">Scatter distribution along ideal diagonal line (y = x).</p>
+              <img src="/outputs/evaluation/01_actual_vs_predicted.png" alt="Actual vs Predicted Ratings" class="rounded-xl w-full border border-gray-100">
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)]">
+              <h4 class="font-serif text-lg font-bold text-charcoal-text mb-1">2. Residual Distribution</h4>
+              <p class="text-xs text-charcoal-muted mb-4">Histogram & KDE of forecast errors exhibiting zero-mean normality.</p>
+              <img src="/outputs/evaluation/02_residual_distribution.png" alt="Residual Distribution" class="rounded-xl w-full border border-gray-100">
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)]">
+              <h4 class="font-serif text-lg font-bold text-charcoal-text mb-1">3. Residuals vs. Predicted Ratings</h4>
+              <p class="text-xs text-charcoal-muted mb-4">Homoscedasticity evaluation demonstrating balanced error dispersion.</p>
+              <img src="/outputs/evaluation/03_residuals_vs_predicted.png" alt="Residuals vs Predicted" class="rounded-xl w-full border border-gray-100">
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)]">
+              <h4 class="font-serif text-lg font-bold text-charcoal-text mb-1">4. Absolute Prediction Error Distribution</h4>
+              <p class="text-xs text-charcoal-muted mb-4">Error density plot highlighting median error of only ~0.15 rating points.</p>
+              <img src="/outputs/evaluation/04_prediction_error_distribution.png" alt="Prediction Error Distribution" class="rounded-xl w-full border border-gray-100">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 6: FEATURE IMPORTANCE                                              -->
+    <!-- PAGE BACKGROUND: Soft Blush (#F5E6E1)                                   -->
+    <!-- ======================================================================= -->
+    <div x-show="activeTab === 'importance'" 
+         class="page-fade-enter py-12 min-h-[calc(100vh-80px)]"
+         style="background-color: #F5E6E1;">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="mb-10">
+          <span class="text-blush-600 font-bold tracking-wider text-xs uppercase">Predictive Signals & Weightings</span>
+          <h1 class="font-serif text-3xl sm:text-4xl font-bold text-charcoal-text mt-1">Random Forest Feature Importance</h1>
+          <p class="text-sm text-charcoal-muted mt-1">Discover which operational characteristics contribute most to the Random Forest model's predictions.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+          <!-- Chart Image Column -->
+          <div class="lg:col-span-7 bg-white rounded-2xl p-6 border border-[#E8D4CE] shadow-[0_4px_16px_-2px_rgba(100,50,40,0.06)]">
+            <h3 class="font-serif text-xl font-bold text-charcoal-text mb-4">Top 10 Influential Features (MDI)</h3>
+            <img src="/outputs/feature_importance/01_rf_top10_feature_importance.png" alt="Random Forest Feature Importance Chart" class="rounded-xl w-full border border-gray-100">
+          </div>
+
+          <!-- Feature Ranking Table Column -->
+          <div class="lg:col-span-5 bg-white rounded-2xl p-6 border border-[#E8D4CE] shadow-[0_4px_16px_-2px_rgba(100,50,40,0.06)]">
+            <h3 class="font-serif text-xl font-bold text-charcoal-text mb-4">Feature Ranking Table</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-charcoal-text">
+                <thead class="bg-[#FAF2EF] uppercase text-charcoal-muted border-b border-[#E8D4CE]">
+                  <tr>
+                    <th class="py-2.5 px-3 font-bold">Rank</th>
+                    <th class="py-2.5 px-3 font-bold">Feature Name</th>
+                    <th class="py-2.5 px-3 font-bold">MDI Importance</th>
+                    <th class="py-2.5 px-3 font-bold">Permutation</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-[#F5E6E1] font-mono">
+                  <tr><td class="py-2 px-3 font-bold">1</td><td class="font-sans font-semibold text-charcoal-text">Votes</td><td class="text-terracotta-600 font-bold">96.42%</td><td>1.8799</td></tr>
+                  <tr><td class="py-2 px-3 font-bold">2</td><td class="font-sans font-semibold text-charcoal-text">City: Other</td><td>0.97%</td><td>0.0083</td></tr>
+                  <tr><td class="py-2 px-3 font-bold">3</td><td class="font-sans font-semibold text-charcoal-text">Average Cost for two</td><td>0.71%</td><td>0.0056</td></tr>
+                  <tr><td class="py-2 px-3 font-bold">4</td><td class="font-sans font-semibold text-charcoal-text">Cuisine Count</td><td>0.23%</td><td>0.0002</td></tr>
+                  <tr><td class="py-2 px-3 font-bold">5</td><td class="font-sans font-semibold text-charcoal-text">Primary Cuisine: North Indian</td><td>0.13%</td><td>0.0027</td></tr>
+                  <tr><td class="py-2 px-3 font-bold">6</td><td class="font-sans font-semibold text-charcoal-text">Price range</td><td>0.13%</td><td>0.0007</td></tr>
+                  <tr><td class="py-2 px-3 font-bold">7</td><td class="font-sans font-semibold text-charcoal-text">Has Online delivery</td><td>0.11%</td><td>0.0008</td></tr>
+                  <tr><td class="py-2 px-3 font-bold">8</td><td class="font-sans font-semibold text-charcoal-text">Country Code: 1 (India)</td><td>0.09%</td><td>0.0010</td></tr>
+                  <tr><td class="py-2 px-3 font-bold">9</td><td class="font-sans font-semibold text-charcoal-text">Primary Cuisine: Chinese</td><td>0.08%</td><td>0.0006</td></tr>
+                  <tr><td class="py-2 px-3 font-bold">10</td><td class="font-sans font-semibold text-charcoal-text">Locality: Other</td><td>0.07%</td><td>0.0002</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- In-Depth Explanation Cards -->
+        <div class="bg-white rounded-3xl p-8 border border-[#E8D4CE] shadow-[0_4px_16px_-2px_rgba(100,50,40,0.06)] space-y-6">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-blush-50 flex items-center justify-center text-blush-600">
+              <i data-lucide="lightbulb" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-serif text-2xl font-bold text-charcoal-text">Interpretation of Top Predictors</h3>
+              <p class="text-xs text-charcoal-muted">Distinguishing model predictive associations from causal mechanisms.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-charcoal-muted">
+            <div class="p-5 rounded-2xl bg-[#FAF2EF] border border-[#E8D4CE] space-y-2">
+              <h4 class="font-bold text-charcoal-text flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-terracotta-600"></span>
+                <span>Review Volume (Votes) &bull; 96.42%</span>
+              </h4>
+              <p class="text-xs leading-relaxed text-charcoal-muted">
+                Review volume acts as an overwhelming credibility filter. Unreviewed restaurants (<4 votes) populate the 0.0 unrated entries, while venues accumulating dozens to hundreds of reviews systematically converge toward high rating clusters (3.8 to 4.8).
+              </p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-[#FAF2EF] border border-[#E8D4CE] space-y-2">
+              <h4 class="font-bold text-charcoal-text flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-gold-500"></span>
+                <span>Average Cost & Price Range &bull; 0.84%</span>
+              </h4>
+              <p class="text-xs leading-relaxed text-charcoal-muted">
+                Venues in Price Tiers 3 and 4 maintain higher median customer ratings. Higher menu prices enable investments in superior ingredient sourcing, interior aesthetics, and attentive table service.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-[#FAF2EF] border border-[#E8D4CE] space-y-2">
+              <h4 class="font-bold text-charcoal-text flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-charcoal-text"></span>
+                <span>Location (City & Locality) &bull; 1.04%</span>
+              </h4>
+              <p class="text-xs leading-relaxed text-charcoal-muted">
+                Regional dining culture, platform adoption rate, and local restaurant competition establish geographic baseline ratings across various metro zones.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-[#FAF2EF] border border-[#E8D4CE] space-y-2">
+              <h4 class="font-bold text-charcoal-text flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                <span>Online Delivery & Cuisines &bull; 0.45%</span>
+              </h4>
+              <p class="text-xs leading-relaxed text-charcoal-muted">
+                Enabling digital delivery and maintaining multi-cuisine breadth expands customer convenience and enhances overall guest satisfaction.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 7: ABOUT PROJECT                                                   -->
+    <!-- PAGE BACKGROUND: Muted Blue-Grey (#E5EDF0)                              -->
+    <!-- ======================================================================= -->
+    <div x-show="activeTab === 'about'" 
+         class="page-fade-enter py-12 min-h-[calc(100vh-80px)]"
+         style="background-color: #E5EDF0;">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        
+        <!-- Header -->
+        <div class="text-center max-w-2xl mx-auto">
+          <span class="text-bluegrey-600 font-bold tracking-wider text-xs uppercase">Project Documentation & Architecture</span>
+          <h1 class="font-serif text-3xl sm:text-4xl font-bold text-charcoal-text mt-1">About Restaurant Insight</h1>
+          <p class="text-sm text-charcoal-muted mt-1">End-to-End Machine Learning System for Restaurant Rating Prediction.</p>
+        </div>
+
+        <!-- Problem Statement & Objectives -->
+        <div class="bg-white rounded-3xl p-8 border border-[#CCDCE1] shadow-[0_4px_16px_-2px_rgba(40,65,75,0.06)] space-y-6">
+          <h3 class="font-serif text-2xl font-bold text-charcoal-text">Project Mission & Objectives</h3>
+          <p class="text-sm text-charcoal-muted leading-relaxed">
+            In the modern hospitality industry, customer ratings dictate consumer trust, platform search ranking, and business viability. Understanding which features influence customer feedback allows restaurateurs and investors to make data-driven decisions on location, pricing, menu offerings, and digital services.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+            <div class="p-5 rounded-2xl bg-[#F0F5F7] border border-[#CCDCE1]">
+              <h4 class="font-bold text-sm text-charcoal-text mb-1">1. Empirical Data</h4>
+              <p class="text-xs text-charcoal-muted leading-relaxed">Trained strictly on real-world dataset (9,551 restaurants, 141 cities, 15 countries).</p>
+            </div>
+            <div class="p-5 rounded-2xl bg-[#F0F5F7] border border-[#CCDCE1]">
+              <h4 class="font-bold text-sm text-charcoal-text mb-1">2. Dedicated Algorithm</h4>
+              <p class="text-xs text-charcoal-muted leading-relaxed">Exclusively powered by Random Forest Regressor (150 estimators, max depth 16).</p>
+            </div>
+            <div class="p-5 rounded-2xl bg-[#F0F5F7] border border-[#CCDCE1]">
+              <h4 class="font-bold text-sm text-charcoal-text mb-1">3. Luxury UX</h4>
+              <p class="text-xs text-charcoal-muted leading-relaxed">High-end food and restaurant aesthetic with dedicated coordinated palettes per page.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Machine Learning Workflow -->
+        <div class="bg-white rounded-3xl p-8 border border-[#CCDCE1] shadow-[0_4px_16px_-2px_rgba(40,65,75,0.06)] space-y-6">
+          <h3 class="font-serif text-2xl font-bold text-charcoal-text">Machine Learning Workflow</h3>
+          <div class="space-y-4">
+            <div class="flex items-start space-x-4">
+              <div class="w-8 h-8 rounded-full bg-bluegrey-600 text-white font-bold text-sm flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
+              <div>
+                <h4 class="font-bold text-sm text-charcoal-text">Data Ingestion & Integrity Validation</h4>
+                <p class="text-xs text-charcoal-muted mt-0.5 leading-relaxed">Loads 9,551 records from data/Dataset .csv, handles missing values (9 in Cuisines imputed with mode), excludes zero-variance and leakage columns.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="w-8 h-8 rounded-full bg-bluegrey-600 text-white font-bold text-sm flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
+              <div>
+                <h4 class="font-bold text-sm text-charcoal-text">Leak-Free Preprocessing Pipeline</h4>
+                <p class="text-xs text-charcoal-muted mt-0.5 leading-relaxed">Splits 80% train and 20% test using random_state=42. Uses ColumnTransformer with median imputer and StandardScaler for numerical features, and OneHotEncoder for categorical features.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="w-8 h-8 rounded-full bg-bluegrey-600 text-white font-bold text-sm flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
+              <div>
+                <h4 class="font-bold text-sm text-charcoal-text">Random Forest Regressor Training</h4>
+                <p class="text-xs text-charcoal-muted mt-0.5 leading-relaxed">Trained with 150 decision trees, max_depth=16, min_samples_split=5. Cross-validated on training data (CV R²: 0.9576) and evaluated on test data (R²: 0.9592, RMSE: 0.3047).</p>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="w-8 h-8 rounded-full bg-bluegrey-600 text-white font-bold text-sm flex items-center justify-center flex-shrink-0 mt-0.5">4</div>
+              <div>
+                <h4 class="font-bold text-sm text-charcoal-text">FastAPI & Frontend Integration</h4>
+                <p class="text-xs text-charcoal-muted mt-0.5 leading-relaxed">Cached model pipeline for real-time inference, returning predicted ratings, qualitative badges, operational advice, and full exploratory search.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="bg-white rounded-3xl p-8 border border-[#CCDCE1] shadow-[0_4px_16px_-2px_rgba(40,65,75,0.06)] space-y-4">
+          <h3 class="font-serif text-2xl font-bold text-charcoal-text">Technologies Utilized</h3>
+          <div class="flex flex-wrap gap-2.5">
+            <span class="px-3 py-1.5 rounded-lg bg-[#EDF3F5] text-charcoal-text text-xs font-bold border border-[#CCDCE1]">Python 3.10</span>
+            <span class="px-3 py-1.5 rounded-lg bg-[#EDF3F5] text-charcoal-text text-xs font-bold border border-[#CCDCE1]">Scikit-learn 1.7.2</span>
+            <span class="px-3 py-1.5 rounded-lg bg-[#EDF3F5] text-charcoal-text text-xs font-bold border border-[#CCDCE1]">FastAPI & Uvicorn</span>
+            <span class="px-3 py-1.5 rounded-lg bg-[#EDF3F5] text-charcoal-text text-xs font-bold border border-[#CCDCE1]">Pandas & NumPy</span>
+            <span class="px-3 py-1.5 rounded-lg bg-[#EDF3F5] text-charcoal-text text-xs font-bold border border-[#CCDCE1]">Tailwind CSS</span>
+            <span class="px-3 py-1.5 rounded-lg bg-[#EDF3F5] text-charcoal-text text-xs font-bold border border-[#CCDCE1]">Alpine.js</span>
+            <span class="px-3 py-1.5 rounded-lg bg-[#EDF3F5] text-charcoal-text text-xs font-bold border border-[#CCDCE1]">Matplotlib & Seaborn</span>
+            <span class="px-3 py-1.5 rounded-lg bg-[#EDF3F5] text-charcoal-text text-xs font-bold border border-[#CCDCE1]">Unsplash Food Photography</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- FOOTER                                                                    -->
+  <!-- ========================================================================= -->
+  <footer class="bg-charcoal-950 text-gray-400 py-12 border-t border-charcoal-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-terracotta-500 to-gold-500 flex items-center justify-center">
+          <i data-lucide="utensils" class="w-4 h-4 text-white"></i>
+        </div>
+        <span class="font-serif text-lg font-bold text-white">RESTAURANT <span class="gold-gradient-text">INSIGHT</span></span>
+      </div>
+      <p class="text-xs text-gray-400 text-center sm:text-right font-medium">
+        Empirical Machine Learning System &bull; Powered Exclusively by Random Forest Regressor &bull; 9,551 Global Restaurants
+      </p>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- ALPINE.JS APPLICATION LOGIC                                               -->
+  <!-- ========================================================================= -->
+  <script>
+    function restaurantApp() {
+      return {
+        activeTab: 'home',
+        mobileMenuOpen: false,
+        stats: {},
+        featuredRestaurants: [],
+        restaurants: [],
+        popularCuisines: [
+          { name: 'North Indian', count: 936, img: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=200&auto=format&fit=crop&q=80' },
+          { name: 'Chinese', count: 865, img: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=200&auto=format&fit=crop&q=80' },
+          { name: 'Fast Food', count: 354, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&auto=format&fit=crop&q=80' },
+          { name: 'Cafe', count: 299, img: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&auto=format&fit=crop&q=80' },
+          { name: 'Bakery', count: 218, img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&auto=format&fit=crop&q=80' },
+          { name: 'Italian', count: 184, img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&auto=format&fit=crop&q=80' }
+        ],
+
+        // Explorer State
+        loadingRestaurants: false,
+        currentPage: 1,
+        totalPages: 1,
+        totalRecords: 0,
+        explorerFilters: {
+          search: '',
+          city: 'All',
+          cuisine: 'All',
+          price_range: '',
+          sort_by: 'rating_desc'
+        },
+
+        // Details Modal State
+        detailsModalOpen: false,
+        selectedRestaurant: {},
+
+        // Prediction Form State
+        predicting: false,
+        predictionForm: {
+          country: 'India',
+          city: 'New Delhi',
+          locality: 'Connaught Place',
+          cuisines: 'North Indian, Mughlai',
+          average_cost_for_two: 1200,
+          price_range: 3,
+          has_online_delivery: 'Yes',
+          has_table_booking: 'Yes',
+          votes: 250
+        },
+        predictionResult: {
+          predicted_rating: 3.85,
+          rating_label: 'Good',
+          badge_class: 'bg-amber-500 text-white',
+          operational_advice: [
+            'Review Velocity: Review volume anchors the rating baseline firmly in the 3.8 to 4.2 tier.',
+            'Strong operational positioning: The venue exhibits well-balanced service conveniences and menu depth.'
+          ]
+        },
+
+        async initApp() {
+          this.$nextTick(() => { lucide.createIcons(); });
+          await this.fetchStatistics();
+          await this.fetchFeatured();
+          await this.fetchRestaurants(1);
+        },
+
+        async fetchStatistics() {
+          try {
+            const res = await fetch('/api/statistics');
+            if (res.ok) {
+              this.stats = await res.json();
+            }
+          } catch (e) {
+            console.error("Failed to load statistics:", e);
+          }
+        },
+
+        async fetchFeatured() {
+          try {
+            const res = await fetch('/api/restaurants?limit=6&sort_by=rating_desc');
+            if (res.ok) {
+              const data = await res.json();
+              this.featuredRestaurants = data.restaurants || [];
+              this.$nextTick(() => { lucide.createIcons(); });
+            }
+          } catch (e) {
+            console.error("Failed to load featured restaurants:", e);
+          }
+        },
+
+        async fetchRestaurants(page = 1) {
+          this.loadingRestaurants = true;
+          this.currentPage = page;
+          try {
+            let url = `/api/restaurants?page=${page}&limit=12&sort_by=${this.explorerFilters.sort_by}`;
+            if (this.explorerFilters.search) url += `&search=${encodeURIComponent(this.explorerFilters.search)}`;
+            if (this.explorerFilters.city && this.explorerFilters.city !== 'All') url += `&city=${encodeURIComponent(this.explorerFilters.city)}`;
+            if (this.explorerFilters.cuisine && this.explorerFilters.cuisine !== 'All') url += `&cuisine=${encodeURIComponent(this.explorerFilters.cuisine)}`;
+            if (this.explorerFilters.price_range) url += `&price_range=${this.explorerFilters.price_range}`;
+
+            const res = await fetch(url);
+            if (res.ok) {
+              const data = await res.json();
+              this.restaurants = data.restaurants || [];
+              this.totalRecords = data.total_records || 0;
+              this.totalPages = data.total_pages || 1;
+            }
+          } catch (e) {
+            console.error("Failed to fetch restaurants:", e);
+          } finally {
+            this.loadingRestaurants = false;
+            this.$nextTick(() => { lucide.createIcons(); });
+          }
+        },
+
+        async openDetails(id) {
+          try {
+            const res = await fetch(`/api/restaurants/${id}`);
+            if (res.ok) {
+              this.selectedRestaurant = await res.json();
+              this.detailsModalOpen = true;
+              this.$nextTick(() => { lucide.createIcons(); });
+            }
+          } catch (e) {
+            console.error("Failed to fetch restaurant details:", e);
+          }
+        },
+
+        filterByCuisineAndExplore(cuisineName) {
+          this.explorerFilters.cuisine = cuisineName;
+          this.activeTab = 'explorer';
+          this.fetchRestaurants(1);
+        },
+
+        async submitPrediction() {
+          this.predicting = true;
+          try {
+            const res = await fetch('/api/predict', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(this.predictionForm)
+            });
+            if (res.ok) {
+              this.predictionResult = await res.json();
+            } else {
+              alert("Error calculating prediction. Check input values.");
+            }
+          } catch (e) {
+            console.error("Prediction API error:", e);
+          } finally {
+            this.predicting = false;
+            this.$nextTick(() => { lucide.createIcons(); });
+          }
+        }
+      };
+    }
+  </script>
+</body>
+</html>

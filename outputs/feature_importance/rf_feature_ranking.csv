@@ -1,0 +1,100 @@
+Feature_Raw,Feature,Importance,Permutation_Importance,Rank
+num__Votes,Votes,0.9642187414250769,1.879908530488907,1
+cat__City_Other,City: Other,0.009681708992087177,0.008268523644843762,2
+num__Average Cost for two,Average Cost for two,0.007066672444455505,0.005557582784099013,3
+num__Cuisine Count,Cuisine Count,0.0023433914523171276,0.00019606787508674728,4
+cat__Primary Cuisine_North Indian,Primary Cuisine: North Indian,0.0013436792264392113,0.0026657853786127062,5
+num__Price range,Price range,0.0013075745100275303,0.000674207312274211,6
+num__Has Online delivery,Has Online delivery,0.0010621364266468433,0.0007813451616014211,7
+cat__Country Code_1,Country Code: 1,0.0008985436984450493,0.0010006784047239092,8
+cat__Primary Cuisine_Chinese,Primary Cuisine: Chinese,0.0007743032061481117,0.0005632986232666281,9
+cat__Locality_Other,Locality: Other,0.0006561934459631996,0.00018157065313402222,10
+cat__Primary Cuisine_Cafe,Primary Cuisine: Cafe,0.00065330913554107,0.00101866464097633,11
+cat__Country Code_30,Country Code: 30,0.0006506471288718522,0.0010381336823710007,12
+cat__Primary Cuisine_American,Primary Cuisine: American,0.0005861012358061054,0.0005609481421886108,13
+cat__City_New Delhi,City: New Delhi,0.0005630103540428026,6.769888834072813e-05,14
+cat__City_Noida,City: Noida,0.0005524696365990971,0.00048758529650170244,15
+num__Has Table booking,Has Table booking,0.0005515963868485045,0.0007340477569562909,16
+cat__Primary Cuisine_Pizza,Primary Cuisine: Pizza,0.0005288182501986993,0.0007098945409505398,17
+cat__Primary Cuisine_Other,Primary Cuisine: Other,0.00042840353476650327,8.741822138575994e-05,18
+cat__City_Gurgaon,City: Gurgaon,0.0004195341777579262,-0.00010026091543697823,19
+cat__Primary Cuisine_South Indian,Primary Cuisine: South Indian,0.0003795683012206889,0.000704504750772661,20
+cat__Primary Cuisine_Continental,Primary Cuisine: Continental,0.00035021367445963705,0.00011153318234062848,21
+cat__Primary Cuisine_Italian,Primary Cuisine: Italian,0.00033189669031149187,0.000159151789136458,22
+cat__Primary Cuisine_Bakery,Primary Cuisine: Bakery,0.0003236622307154741,0.00010389248827256115,23
+cat__Country Code_215,Country Code: 215,0.00025171614132991525,-6.36375700691305e-05,24
+cat__Primary Cuisine_Fast Food,Primary Cuisine: Fast Food,0.00021043523494133112,1.3798745325743766e-05,25
+cat__Country Code_216,Country Code: 216,0.00019059917677269418,0.00010840396261464491,26
+cat__Locality_Connaught Place,Locality: Connaught Place,0.00017495576743695106,0.00010882645512313437,27
+cat__City_S��o Paulo,City: S��o Paulo,0.0001549974913693394,5.981063593689662e-05,28
+cat__City_Ghaziabad,City: Ghaziabad,0.0001491224255540446,2.3625719791198208e-05,29
+cat__Primary Cuisine_Ice Cream,Primary Cuisine: Ice Cream,0.00013236460506396765,5.9296888766047214e-06,30
+cat__Locality_Malviya Nagar,Locality: Malviya Nagar,0.00011741787073663087,0.00010218570366007373,31
+cat__Locality_Rajinder Nagar,Locality: Rajinder Nagar,0.00010511291568427079,2.9381004810913324e-05,32
+cat__Primary Cuisine_Mughlai,Primary Cuisine: Mughlai,0.00010510152525090012,-7.628183217149865e-05,33
+cat__Country Code_148,Country Code: 148,0.00010228584524131822,-4.737497737588026e-05,34
+cat__Locality_Rajouri Garden,Locality: Rajouri Garden,9.755383864756314e-05,2.5974829834773948e-05,35
+cat__Country Code_189,Country Code: 189,9.561806625804859e-05,-4.165819081536348e-06,36
+cat__Primary Cuisine_European,Primary Cuisine: European,9.492838966660428e-05,-0.00016346079441804663,37
+cat__Primary Cuisine_Finger Food,Primary Cuisine: Finger Food,9.484167689289408e-05,3.314747168312593e-05,38
+cat__Primary Cuisine_Burger,Primary Cuisine: Burger,9.477429613589461e-05,1.2052281578833757e-05,39
+cat__Primary Cuisine_Desserts,Primary Cuisine: Desserts,9.4582587139583e-05,6.87353270219182e-05,40
+cat__Primary Cuisine_Biryani,Primary Cuisine: Biryani,9.395942630076604e-05,4.110467502527193e-06,41
+cat__Primary Cuisine_Healthy Food,Primary Cuisine: Healthy Food,8.722015683629071e-05,7.980728884842137e-05,42
+cat__Locality_Sector 18,Locality: Sector 18,8.540255211263071e-05,7.400553651975006e-05,43
+cat__Locality_Satyaniketan,Locality: Satyaniketan,8.538830231353558e-05,2.4581320072947222e-05,44
+cat__Locality_Greater Kailash (GK) 1,Locality: Greater Kailash (GK) 1,7.953340119237717e-05,4.5856149458534114e-05,45
+cat__Primary Cuisine_Asian,Primary Cuisine: Asian,7.627813811785943e-05,7.270388974893738e-05,46
+cat__Country Code_14,Country Code: 14,7.298350941572042e-05,-8.02456721707312e-05,47
+cat__Country Code_208,Country Code: 208,7.027770449840183e-05,3.8764440213334694e-07,48
+cat__City_Faridabad,City: Faridabad,6.770105089177838e-05,3.0144421767119844e-05,49
+cat__Locality_Karol Bagh,Locality: Karol Bagh,6.467712442807183e-05,-1.903145837065523e-05,50
+cat__Primary Cuisine_Mithai,Primary Cuisine: Mithai,6.374210545024321e-05,-2.3392661285503992e-05,51
+cat__City_Ankara,City: Ankara,6.175851407567392e-05,1.278513160603012e-05,52
+cat__Locality_DLF Phase 3,Locality: DLF Phase 3,6.0244792503291684e-05,2.707072638805652e-05,53
+cat__Country Code_214,Country Code: 214,5.407460213848928e-05,-6.01959256737894e-05,54
+cat__City_Ahmedabad,City: Ahmedabad,5.152241694615572e-05,2.899385372696628e-05,55
+cat__Primary Cuisine_Beverages,Primary Cuisine: Beverages,5.1068264654346554e-05,0.00011099567128982634,56
+cat__City_Jaipur,City: Jaipur,4.836948430317552e-05,1.6452522579291083e-05,57
+cat__Primary Cuisine_Street Food,Primary Cuisine: Street Food,4.762460267714616e-05,-3.039145168293178e-05,58
+cat__Locality_Delhi University-GTB Nagar,Locality: Delhi University-GTB Nagar,3.97047466050765e-05,-4.765326829114791e-06,59
+cat__City_Wellington City,City: Wellington City,3.950551411241263e-05,1.088135538167556e-05,60
+cat__Locality_Mayur Vihar Phase 1,Locality: Mayur Vihar Phase 1,3.895718182813326e-05,1.727533743201004e-05,61
+cat__Locality_Defence Colony,Locality: Defence Colony,3.797657901852677e-05,-8.335843869189396e-06,62
+cat__Locality_Kalkaji,Locality: Kalkaji,3.658641834630492e-05,5.006866480594674e-06,63
+cat__City_Pune,City: Pune,3.6054076929315746e-05,2.1131088020198695e-05,64
+cat__Locality_Safdarjung,Locality: Safdarjung,3.482198870495312e-05,1.3835001082185272e-05,65
+cat__Primary Cuisine_Mexican,Primary Cuisine: Mexican,3.451482871295495e-05,1.7188392977818268e-07,66
+cat__Locality_Hauz Khas,Locality: Hauz Khas,3.4514202581209595e-05,1.8411804952211952e-06,67
+cat__Country Code_184,Country Code: 184,3.3719594320567884e-05,-1.7237797282354528e-05,68
+cat__City_Dubuque,City: Dubuque,3.168825101144438e-05,8.341206121809108e-06,69
+cat__Locality_Pitampura,Locality: Pitampura,3.15446702246005e-05,-3.1659704015973843e-06,70
+cat__City_Valdosta,City: Valdosta,3.133200489033893e-05,1.4787788267023316e-05,71
+cat__Locality_Paharganj,Locality: Paharganj,2.8684960604094202e-05,3.2781308777707353e-06,72
+cat__City_Lucknow,City: Lucknow,2.8587581205140892e-05,3.613188084630181e-05,73
+cat__Locality_Greater Kailash (GK) 2,Locality: Greater Kailash (GK) 2,2.7375554296978178e-05,1.9828808330846215e-06,74
+cat__Country Code_191,Country Code: 191,2.7073913072994773e-05,3.440940376002733e-05,75
+cat__City_Gainesville,City: Gainesville,2.5399729097412397e-05,1.292823289977818e-06,76
+cat__Locality_Sector 56,Locality: Sector 56,2.399789287143614e-05,-3.7867033617189348e-06,77
+cat__Locality_Sector 62,Locality: Sector 62,2.056000202836619e-05,5.158459134957383e-06,78
+cat__Locality_Chandni Chowk,Locality: Chandni Chowk,2.0537775424974753e-05,6.068594861008414e-06,79
+cat__Primary Cuisine_Japanese,Primary Cuisine: Japanese,1.971858291844657e-05,1.1347595822996936e-06,80
+cat__Locality_Jail Road,Locality: Jail Road,1.7345984496297335e-05,1.1280330633400836e-05,81
+cat__Primary Cuisine_Raw Meats,Primary Cuisine: Raw Meats,1.614520875333286e-05,7.926217193898744e-06,82
+cat__Country Code_162,Country Code: 162,1.431615916661229e-05,3.5308248129983785e-05,83
+cat__Country Code_166,Country Code: 166,1.4113528342063324e-05,-5.334503727638662e-09,84
+cat__Locality_Kamla Nagar,Locality: Kamla Nagar,1.3740971948951899e-05,2.507595765921522e-06,85
+cat__Locality_Krishna Nagar,Locality: Krishna Nagar,1.349655836319257e-05,-4.091580852350063e-07,86
+cat__City_Amritsar,City: Amritsar,1.0772148317683814e-05,1.2510633951445805e-05,87
+cat__Locality_Sector 15,Locality: Sector 15,1.0354751267362477e-05,9.060299817531536e-06,88
+cat__City_Columbus,City: Columbus,8.979488806874637e-06,3.183246918281313e-07,89
+cat__Locality_Shahdara,Locality: Shahdara,7.602728421631347e-06,-3.1829226272428456e-07,90
+cat__Locality_Shalimar Bagh,Locality: Shalimar Bagh,6.719055533181707e-06,2.737398827190596e-06,91
+cat__Locality_Mahipalpur,Locality: Mahipalpur,6.183973023857312e-06,-2.2801322245857848e-07,92
+cat__City_Nashik,City: Nashik,4.423066775110772e-06,0.0,93
+cat__Locality_Vasundhara Enclave,Locality: Vasundhara Enclave,3.3211731127589724e-06,-1.4030298272071918e-07,94
+cat__City_Boise,City: Boise,3.2543090879902526e-06,3.5976035559492916e-07,95
+cat__Country Code_94,Country Code: 94,3.236980211838145e-06,4.4580759102741395e-06,96
+cat__City_Rest of Hawaii,City: Rest of Hawaii,2.2231232443817764e-06,3.7214032825971797e-06,97
+cat__Locality_Mukherjee Nagar,Locality: Mukherjee Nagar,5.051745967660016e-07,3.625182950495187e-07,98
+cat__Country Code_37,Country Code: 37,0.0,0.0,99

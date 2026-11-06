@@ -1,0 +1,192 @@
+{
+    "best_model": "Gradient Boosting",
+    "best_cv_r2": 0.9594,
+    "models": {
+        "Linear Regression": {
+            "CV_R2_Mean": 0.3953,
+            "CV_R2_Std": 0.0117,
+            "Train_Metrics": {
+                "MAE": 0.9588,
+                "MSE": 1.3653,
+                "RMSE": 1.1685,
+                "R2": 0.4076
+            },
+            "Test_Metrics": {
+                "MAE": 0.9736,
+                "MSE": 1.388,
+                "RMSE": 1.1781,
+                "R2": 0.3902
+            },
+            "Best_Hyperparameters": {},
+            "Model_File": "linear_regression.pkl"
+        },
+        "Decision Tree": {
+            "CV_R2_Mean": 0.9514,
+            "CV_R2_Std": 0.0025,
+            "Train_Metrics": {
+                "MAE": 0.2023,
+                "MSE": 0.0969,
+                "RMSE": 0.3113,
+                "R2": 0.9579
+            },
+            "Test_Metrics": {
+                "MAE": 0.2094,
+                "MSE": 0.1021,
+                "RMSE": 0.3195,
+                "R2": 0.9551
+            },
+            "Best_Hyperparameters": {
+                "max_depth": 8,
+                "min_samples_leaf": 4,
+                "min_samples_split": 20
+            },
+            "Model_File": "decision_tree.pkl"
+        },
+        "Random Forest": {
+            "CV_R2_Mean": 0.9576,
+            "CV_R2_Std": 0.0026,
+            "Train_Metrics": {
+                "MAE": 0.1382,
+                "MSE": 0.0465,
+                "RMSE": 0.2156,
+                "R2": 0.9798
+            },
+            "Test_Metrics": {
+                "MAE": 0.1991,
+                "MSE": 0.0928,
+                "RMSE": 0.3047,
+                "R2": 0.9592
+            },
+            "Best_Hyperparameters": {
+                "max_depth": 16,
+                "min_samples_leaf": 2,
+                "min_samples_split": 5,
+                "n_estimators": 150
+            },
+            "Model_File": "random_forest.pkl"
+        },
+        "Gradient Boosting": {
+            "CV_R2_Mean": 0.9594,
+            "CV_R2_Std": 0.0027,
+            "Train_Metrics": {
+                "MAE": 0.175,
+                "MSE": 0.0707,
+                "RMSE": 0.2658,
+                "R2": 0.9693
+            },
+            "Test_Metrics": {
+                "MAE": 0.2011,
+                "MSE": 0.09,
+                "RMSE": 0.2999,
+                "R2": 0.9605
+            },
+            "Best_Hyperparameters": {
+                "learning_rate": 0.1,
+                "max_depth": 5,
+                "n_estimators": 150
+            },
+            "Model_File": "gradient_boosting.pkl"
+        }
+    },
+    "feature_names": [
+        "num__Average Cost for two",
+        "num__Price range",
+        "num__Votes",
+        "num__Cuisine Count",
+        "num__Has Table booking",
+        "num__Has Online delivery",
+        "cat__Country Code_1",
+        "cat__Country Code_14",
+        "cat__Country Code_30",
+        "cat__Country Code_37",
+        "cat__Country Code_94",
+        "cat__Country Code_148",
+        "cat__Country Code_162",
+        "cat__Country Code_166",
+        "cat__Country Code_184",
+        "cat__Country Code_189",
+        "cat__Country Code_191",
+        "cat__Country Code_208",
+        "cat__Country Code_214",
+        "cat__Country Code_215",
+        "cat__Country Code_216",
+        "cat__City_Ahmedabad",
+        "cat__City_Amritsar",
+        "cat__City_Ankara",
+        "cat__City_Boise",
+        "cat__City_Columbus",
+        "cat__City_Dubuque",
+        "cat__City_Faridabad",
+        "cat__City_Gainesville",
+        "cat__City_Ghaziabad",
+        "cat__City_Gurgaon",
+        "cat__City_Jaipur",
+        "cat__City_Lucknow",
+        "cat__City_Nashik",
+        "cat__City_New Delhi",
+        "cat__City_Noida",
+        "cat__City_Other",
+        "cat__City_Pune",
+        "cat__City_Rest of Hawaii",
+        "cat__City_S\ufffd\ufffdo Paulo",
+        "cat__City_Valdosta",
+        "cat__City_Wellington City",
+        "cat__Locality_Chandni Chowk",
+        "cat__Locality_Connaught Place",
+        "cat__Locality_DLF Phase 3",
+        "cat__Locality_Defence Colony",
+        "cat__Locality_Delhi University-GTB Nagar",
+        "cat__Locality_Greater Kailash (GK) 1",
+        "cat__Locality_Greater Kailash (GK) 2",
+        "cat__Locality_Hauz Khas",
+        "cat__Locality_Jail Road",
+        "cat__Locality_Kalkaji",
+        "cat__Locality_Kamla Nagar",
+        "cat__Locality_Karol Bagh",
+        "cat__Locality_Krishna Nagar",
+        "cat__Locality_Mahipalpur",
+        "cat__Locality_Malviya Nagar",
+        "cat__Locality_Mayur Vihar Phase 1",
+        "cat__Locality_Mukherjee Nagar",
+        "cat__Locality_Other",
+        "cat__Locality_Paharganj",
+        "cat__Locality_Pitampura",
+        "cat__Locality_Rajinder Nagar",
+        "cat__Locality_Rajouri Garden",
+        "cat__Locality_Safdarjung",
+        "cat__Locality_Satyaniketan",
+        "cat__Locality_Sector 15",
+        "cat__Locality_Sector 18",
+        "cat__Locality_Sector 56",
+        "cat__Locality_Sector 62",
+        "cat__Locality_Shahdara",
+        "cat__Locality_Shalimar Bagh",
+        "cat__Locality_Vasundhara Enclave",
+        "cat__Primary Cuisine_American",
+        "cat__Primary Cuisine_Asian",
+        "cat__Primary Cuisine_Bakery",
+        "cat__Primary Cuisine_Beverages",
+        "cat__Primary Cuisine_Biryani",
+        "cat__Primary Cuisine_Burger",
+        "cat__Primary Cuisine_Cafe",
+        "cat__Primary Cuisine_Chinese",
+        "cat__Primary Cuisine_Continental",
+        "cat__Primary Cuisine_Desserts",
+        "cat__Primary Cuisine_European",
+        "cat__Primary Cuisine_Fast Food",
+        "cat__Primary Cuisine_Finger Food",
+        "cat__Primary Cuisine_Healthy Food",
+        "cat__Primary Cuisine_Ice Cream",
+        "cat__Primary Cuisine_Italian",
+        "cat__Primary Cuisine_Japanese",
+        "cat__Primary Cuisine_Mexican",
+        "cat__Primary Cuisine_Mithai",
+        "cat__Primary Cuisine_Mughlai",
+        "cat__Primary Cuisine_North Indian",
+        "cat__Primary Cuisine_Other",
+        "cat__Primary Cuisine_Pizza",
+        "cat__Primary Cuisine_Raw Meats",
+        "cat__Primary Cuisine_South Indian",
+        "cat__Primary Cuisine_Street Food"
+    ]
+}
