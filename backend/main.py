@@ -18,8 +18,15 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 
-# Ensure module path
-sys.path.append(os.path.dirname(__file__))
+# Ensure backend directory is prioritized first in sys.path
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(CURRENT_DIR)
+SRC_DIR = os.path.join(ROOT_DIR, 'src')
+for d in [SRC_DIR, ROOT_DIR, CURRENT_DIR]:
+    if os.path.exists(d):
+        if d in sys.path:
+            sys.path.remove(d)
+        sys.path.insert(0, d)
 from data_loader import load_data, COUNTRY_MAP, inspect_dataset
 from predict import get_predictor, predict_rating, get_rating_category
 
