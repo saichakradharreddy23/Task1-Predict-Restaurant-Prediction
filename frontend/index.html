@@ -19,6 +19,9 @@
   <!-- Alpine.js for Reactive State Management -->
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+  <!-- Centralized Backend API Configuration -->
+  <script src="config.js"></script>
+
   <!-- Tailwind Custom Configuration -->
   <script>
     tailwind.config = {
@@ -196,8 +199,16 @@
         </button>
       </nav>
 
-      <!-- CTA Button -->
+      <!-- Status & CTA Button -->
       <div class="hidden sm:flex items-center space-x-3">
+        <!-- Backend Cloud Status Pill -->
+        <div class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md transition-all cursor-default"
+             :class="backendStatus === 'connected' ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/30' : (backendStatus === 'waking_up' ? 'bg-amber-950/80 text-amber-300 border border-amber-500/30 animate-pulse' : 'bg-charcoal-800 text-gray-400 border border-white/10')"
+             :title="backendStatus === 'connected' ? 'Connected to Render FastAPI backend' : 'Connecting / Waking Render cloud instance'">
+          <span class="w-2 h-2 rounded-full" 
+                :class="backendStatus === 'connected' ? 'bg-emerald-400' : (backendStatus === 'waking_up' ? 'bg-amber-400 animate-ping' : 'bg-gray-400')"></span>
+          <span x-text="backendStatus === 'connected' ? 'Render API Live' : (backendStatus === 'waking_up' ? 'Waking API (~30s)...' : 'Checking API...')">Checking API...</span>
+        </div>
         <button @click="activeTab = 'predict'" class="bg-gradient-to-r from-terracotta-600 to-terracotta-500 hover:from-terracotta-500 hover:to-gold-500 text-white font-medium text-sm px-5 py-2.5 rounded-full shadow-lg shadow-terracotta-600/30 transition-all flex items-center space-x-2 transform active:scale-95">
           <i data-lucide="sparkles" class="w-4 h-4 text-gold-300"></i>
           <span>Try AI Predictor</span>
@@ -774,6 +785,15 @@
                   </span>
                 </button>
               </div>
+
+              <!-- Error Alert if API call fails -->
+              <div x-show="predictionError" x-transition class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 flex items-start space-x-2.5">
+                <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5"></i>
+                <div>
+                  <span class="font-bold block">Prediction Notice</span>
+                  <span x-text="predictionError"></span>
+                </div>
+              </div>
             </form>
           </div>
 
@@ -947,25 +967,25 @@
             <div class="bg-white rounded-2xl p-6 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)]">
               <h4 class="font-serif text-lg font-bold text-charcoal-text mb-1">1. Actual vs. Predicted Restaurant Ratings</h4>
               <p class="text-xs text-charcoal-muted mb-4">Scatter distribution along ideal diagonal line (y = x).</p>
-              <img src="/outputs/evaluation/01_actual_vs_predicted.png" alt="Actual vs Predicted Ratings" class="rounded-xl w-full border border-gray-100">
+              <img :src="getApiUrl('/outputs/evaluation/01_actual_vs_predicted.png')" src="https://task1-predict-restaurant-prediction.onrender.com/outputs/evaluation/01_actual_vs_predicted.png" alt="Actual vs Predicted Ratings" class="rounded-xl w-full border border-gray-100" onerror="this.src='outputs/evaluation/01_actual_vs_predicted.png'">
             </div>
 
             <div class="bg-white rounded-2xl p-6 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)]">
               <h4 class="font-serif text-lg font-bold text-charcoal-text mb-1">2. Residual Distribution</h4>
               <p class="text-xs text-charcoal-muted mb-4">Histogram & KDE of forecast errors exhibiting zero-mean normality.</p>
-              <img src="/outputs/evaluation/02_residual_distribution.png" alt="Residual Distribution" class="rounded-xl w-full border border-gray-100">
+              <img :src="getApiUrl('/outputs/evaluation/02_residual_distribution.png')" src="https://task1-predict-restaurant-prediction.onrender.com/outputs/evaluation/02_residual_distribution.png" alt="Residual Distribution" class="rounded-xl w-full border border-gray-100" onerror="this.src='outputs/evaluation/02_residual_distribution.png'">
             </div>
 
             <div class="bg-white rounded-2xl p-6 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)]">
               <h4 class="font-serif text-lg font-bold text-charcoal-text mb-1">3. Residuals vs. Predicted Ratings</h4>
               <p class="text-xs text-charcoal-muted mb-4">Homoscedasticity evaluation demonstrating balanced error dispersion.</p>
-              <img src="/outputs/evaluation/03_residuals_vs_predicted.png" alt="Residuals vs Predicted" class="rounded-xl w-full border border-gray-100">
+              <img :src="getApiUrl('/outputs/evaluation/03_residuals_vs_predicted.png')" src="https://task1-predict-restaurant-prediction.onrender.com/outputs/evaluation/03_residuals_vs_predicted.png" alt="Residuals vs Predicted" class="rounded-xl w-full border border-gray-100" onerror="this.src='outputs/evaluation/03_residuals_vs_predicted.png'">
             </div>
 
             <div class="bg-white rounded-2xl p-6 border border-[#D5D7E8] shadow-[0_4px_16px_-2px_rgba(70,70,120,0.06)]">
               <h4 class="font-serif text-lg font-bold text-charcoal-text mb-1">4. Absolute Prediction Error Distribution</h4>
               <p class="text-xs text-charcoal-muted mb-4">Error density plot highlighting median error of only ~0.15 rating points.</p>
-              <img src="/outputs/evaluation/04_prediction_error_distribution.png" alt="Prediction Error Distribution" class="rounded-xl w-full border border-gray-100">
+              <img :src="getApiUrl('/outputs/evaluation/04_prediction_error_distribution.png')" src="https://task1-predict-restaurant-prediction.onrender.com/outputs/evaluation/04_prediction_error_distribution.png" alt="Prediction Error Distribution" class="rounded-xl w-full border border-gray-100" onerror="this.src='outputs/evaluation/04_prediction_error_distribution.png'">
             </div>
           </div>
         </div>
@@ -992,7 +1012,7 @@
           <!-- Chart Image Column -->
           <div class="lg:col-span-7 bg-white rounded-2xl p-6 border border-[#E8D4CE] shadow-[0_4px_16px_-2px_rgba(100,50,40,0.06)]">
             <h3 class="font-serif text-xl font-bold text-charcoal-text mb-4">Top 10 Influential Features (MDI)</h3>
-            <img src="/outputs/feature_importance/01_rf_top10_feature_importance.png" alt="Random Forest Feature Importance Chart" class="rounded-xl w-full border border-gray-100">
+            <img :src="getApiUrl('/outputs/feature_importance/01_rf_top10_feature_importance.png')" src="https://task1-predict-restaurant-prediction.onrender.com/outputs/feature_importance/01_rf_top10_feature_importance.png" alt="Random Forest Feature Importance Chart" class="rounded-xl w-full border border-gray-100" onerror="this.src='outputs/feature_importance/01_rf_top10_feature_importance.png'">
           </div>
 
           <!-- Feature Ranking Table Column -->
@@ -1198,12 +1218,18 @@
   <!-- ========================================================================= -->
   <script>
     function restaurantApp() {
+      // Robust API endpoint resolver with centralized fallback
+      const apiUrl = (endpoint) => (typeof getApiUrl === 'function' ? getApiUrl(endpoint) : `https://task1-predict-restaurant-prediction.onrender.com${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`);
+
       return {
         activeTab: 'home',
         mobileMenuOpen: false,
+        backendStatus: 'checking', // 'checking', 'connected', 'waking_up', 'offline'
         stats: {},
         featuredRestaurants: [],
         restaurants: [],
+        modelMetrics: null,
+        featureImportance: null,
         popularCuisines: [
           { name: 'North Indian', count: 936, img: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=200&auto=format&fit=crop&q=80' },
           { name: 'Chinese', count: 865, img: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=200&auto=format&fit=crop&q=80' },
@@ -1232,6 +1258,7 @@
 
         // Prediction Form State
         predicting: false,
+        predictionError: null,
         predictionForm: {
           country: 'India',
           city: 'New Delhi',
@@ -1254,33 +1281,71 @@
         },
 
         async initApp() {
-          this.$nextTick(() => { lucide.createIcons(); });
-          await this.fetchStatistics();
-          await this.fetchFeatured();
-          await this.fetchRestaurants(1);
+          this.$nextTick(() => { if (window.lucide) lucide.createIcons(); });
+          await this.checkBackendHealth();
+          // Load data concurrently without blocking
+          Promise.allSettled([
+            this.fetchStatistics(),
+            this.fetchFeatured(),
+            this.fetchRestaurants(1),
+            this.fetchModelMetrics(),
+            this.fetchFeatureImportance()
+          ]);
+        },
+
+        async checkBackendHealth() {
+          this.backendStatus = 'checking';
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 6000);
+            const res = await fetch(apiUrl('/api/health'), { signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (res.ok) {
+              this.backendStatus = 'connected';
+              return;
+            }
+          } catch (e) {
+            // Render free instance may be spinning up from cold sleep
+            this.backendStatus = 'waking_up';
+          }
+
+          // If waking up, retry automatically
+          setTimeout(async () => {
+            try {
+              const res = await fetch(apiUrl('/api/health'));
+              if (res.ok) {
+                this.backendStatus = 'connected';
+                this.fetchStatistics();
+                this.fetchFeatured();
+                this.fetchRestaurants(this.currentPage);
+              }
+            } catch (err) {
+              this.backendStatus = 'offline';
+            }
+          }, 8000);
         },
 
         async fetchStatistics() {
           try {
-            const res = await fetch('/api/statistics');
+            const res = await fetch(apiUrl('/api/statistics'));
             if (res.ok) {
               this.stats = await res.json();
             }
           } catch (e) {
-            console.error("Failed to load statistics:", e);
+            console.warn("Statistics API connecting...", e);
           }
         },
 
         async fetchFeatured() {
           try {
-            const res = await fetch('/api/restaurants?limit=6&sort_by=rating_desc');
+            const res = await fetch(apiUrl('/api/restaurants?limit=6&sort_by=rating_desc'));
             if (res.ok) {
               const data = await res.json();
               this.featuredRestaurants = data.restaurants || [];
-              this.$nextTick(() => { lucide.createIcons(); });
+              this.$nextTick(() => { if (window.lucide) lucide.createIcons(); });
             }
           } catch (e) {
-            console.error("Failed to load featured restaurants:", e);
+            console.warn("Featured restaurants API connecting...", e);
           }
         },
 
@@ -1288,34 +1353,35 @@
           this.loadingRestaurants = true;
           this.currentPage = page;
           try {
-            let url = `/api/restaurants?page=${page}&limit=12&sort_by=${this.explorerFilters.sort_by}`;
-            if (this.explorerFilters.search) url += `&search=${encodeURIComponent(this.explorerFilters.search)}`;
-            if (this.explorerFilters.city && this.explorerFilters.city !== 'All') url += `&city=${encodeURIComponent(this.explorerFilters.city)}`;
-            if (this.explorerFilters.cuisine && this.explorerFilters.cuisine !== 'All') url += `&cuisine=${encodeURIComponent(this.explorerFilters.cuisine)}`;
-            if (this.explorerFilters.price_range) url += `&price_range=${this.explorerFilters.price_range}`;
+            let path = `/api/restaurants?page=${page}&limit=12&sort_by=${this.explorerFilters.sort_by}`;
+            if (this.explorerFilters.search) path += `&search=${encodeURIComponent(this.explorerFilters.search)}`;
+            if (this.explorerFilters.city && this.explorerFilters.city !== 'All') path += `&city=${encodeURIComponent(this.explorerFilters.city)}`;
+            if (this.explorerFilters.cuisine && this.explorerFilters.cuisine !== 'All') path += `&cuisine=${encodeURIComponent(this.explorerFilters.cuisine)}`;
+            if (this.explorerFilters.price_range) path += `&price_range=${this.explorerFilters.price_range}`;
 
-            const res = await fetch(url);
+            const res = await fetch(apiUrl(path));
             if (res.ok) {
               const data = await res.json();
               this.restaurants = data.restaurants || [];
               this.totalRecords = data.total_records || 0;
               this.totalPages = data.total_pages || 1;
+              if (this.backendStatus !== 'connected') this.backendStatus = 'connected';
             }
           } catch (e) {
-            console.error("Failed to fetch restaurants:", e);
+            console.warn("Restaurants API connecting...", e);
           } finally {
             this.loadingRestaurants = false;
-            this.$nextTick(() => { lucide.createIcons(); });
+            this.$nextTick(() => { if (window.lucide) lucide.createIcons(); });
           }
         },
 
         async openDetails(id) {
           try {
-            const res = await fetch(`/api/restaurants/${id}`);
+            const res = await fetch(apiUrl(`/api/restaurants/${id}`));
             if (res.ok) {
               this.selectedRestaurant = await res.json();
               this.detailsModalOpen = true;
-              this.$nextTick(() => { lucide.createIcons(); });
+              this.$nextTick(() => { if (window.lucide) lucide.createIcons(); });
             }
           } catch (e) {
             console.error("Failed to fetch restaurant details:", e);
@@ -1328,24 +1394,50 @@
           this.fetchRestaurants(1);
         },
 
+        async fetchModelMetrics() {
+          try {
+            const res = await fetch(apiUrl('/api/model-metrics'));
+            if (res.ok) {
+              this.modelMetrics = await res.json();
+            }
+          } catch (e) {
+            console.warn("Model metrics API connecting...", e);
+          }
+        },
+
+        async fetchFeatureImportance() {
+          try {
+            const res = await fetch(apiUrl('/api/feature-importance'));
+            if (res.ok) {
+              this.featureImportance = await res.json();
+            }
+          } catch (e) {
+            console.warn("Feature importance API connecting...", e);
+          }
+        },
+
         async submitPrediction() {
           this.predicting = true;
+          this.predictionError = null;
           try {
-            const res = await fetch('/api/predict', {
+            const res = await fetch(apiUrl('/api/predict'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(this.predictionForm)
             });
             if (res.ok) {
               this.predictionResult = await res.json();
+              if (this.backendStatus !== 'connected') this.backendStatus = 'connected';
             } else {
-              alert("Error calculating prediction. Check input values.");
+              const errBody = await res.json().catch(() => ({}));
+              this.predictionError = errBody.detail || 'Prediction request rejected by backend server. Please verify input values.';
             }
           } catch (e) {
-            console.error("Prediction API error:", e);
+            console.error("Prediction API connection error:", e);
+            this.predictionError = 'Cannot reach the Render backend. The instance may be waking from idle sleep; please retry in ~20 seconds.';
           } finally {
             this.predicting = false;
-            this.$nextTick(() => { lucide.createIcons(); });
+            this.$nextTick(() => { if (window.lucide) lucide.createIcons(); });
           }
         }
       };

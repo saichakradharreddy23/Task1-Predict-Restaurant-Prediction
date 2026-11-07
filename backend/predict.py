@@ -55,6 +55,22 @@ class RestaurantRatingPredictor:
         self.pipeline = joblib.load(pipeline_path)
         self.model = joblib.load(model_path)
 
+        # Cross-version compatibility patch for SimpleImputer (_fill_dtype / _fit_dtype)
+        try:
+            ct = getattr(self.pipeline, 'named_steps', {}).get('column_transformer', None)
+            if ct and hasattr(ct, 'transformers_'):
+                for _, trans, _ in ct.transformers_:
+                    if hasattr(trans, 'steps'):
+                        for _, sub in trans.steps:
+                            if hasattr(sub, 'statistics_'):
+                                stat_dtype = getattr(sub.statistics_, 'dtype', None)
+                                if not hasattr(sub, '_fill_dtype'):
+                                    sub._fill_dtype = getattr(sub, '_fit_dtype', stat_dtype)
+                                if not hasattr(sub, '_fit_dtype'):
+                                    sub._fit_dtype = getattr(sub, '_fill_dtype', stat_dtype)
+        except Exception:
+            pass
+
     def validate_inputs(self, raw_input: Dict[str, Any]) -> pd.DataFrame:
         """Validates and standardizes input dictionary into a clean DataFrame."""
         clean = {k.strip(): v for k, v in raw_input.items()}

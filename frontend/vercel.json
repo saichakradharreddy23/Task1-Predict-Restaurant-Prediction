@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://task1-predict-restaurant-prediction.onrender.com/api/:path*"
+    },
+    {
+      "source": "/outputs/:path*",
+      "destination": "https://task1-predict-restaurant-prediction.onrender.com/outputs/:path*"
+    }
+  ]
+}
